@@ -2,7 +2,6 @@ AC_INIT([fgwas], [0.03], [joepickrell@gmail.com], [fgwas], [http://gwas.googleco
 AC_PROG_CXX
 AM_INIT_AUTOMAKE([foreign tar-pax -Wall -Werror])
 AC_CONFIG_HEADERS([config.h])
-AM_MAINTAINER_MODE([disable])
 AC_CHECK_LIB([z],[gzopen],,AC_MSG_ERROR(could not find zlib))
 AC_CHECK_LIB([m],[cos])
 AC_CHECK_LIB([gslcblas],[cblas_dgemm],,AC_MSG_ERROR(could not find GSL BLAS))
