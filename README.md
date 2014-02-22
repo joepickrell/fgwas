@@ -7,12 +7,13 @@ fgwas is a command line tool for integrating functional genomic information into
 
 1. Are these associations enriched in particular types of regions of the genome (coding exons, DNAse hypersensitive sites, etc.)?
 2. Can we use these enrichments (if they exist) to identify novel loci influencing the trait?
-The underlying model is described in: Pickrell JK (2013) Joint analysis of functional genomic data and genome-wide association studies of 18 human traits. bioRxiv 10.1101/000752
+
+The underlying model is described in: Pickrell JK (2014) [Joint analysis of functional genomic data and genome-wide association studies of 18 human traits](http://biorxiv.org/content/early/2014/01/22/000752). bioRxiv 10.1101/000752
 
 ##Installation##
 The most up-to-date release is: version 0.2
 
-A user guide is available here: fgwas v0.2 User Guide
+A user guide is available here: [fgwas v0.2 User Guide](https://github.com/joepickrell/fgwas/blob/master/man/fgwas_manual.pdf)
 
 Previous versions are available from the [Google Code repository](https://code.google.com/p/gwas/).
 
