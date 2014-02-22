@@ -31,6 +31,10 @@ After downloading fgwas-0.3.tar.gz at the link above, run:
 
 >make
 
+The most common compilation error is that the configure script cannot find Boost or GSL. You may have to tell the script explicitly where to find them. For example, on OS X using macports, installations go to the non-standard path /opt/local/lib. To configure in this case, replace the above configure step with:
+
+>./configure LDFLAGS=-L/opt/local/lib
+
 A user guide is available here: [fgwas v0.2 User Guide](https://github.com/joepickrell/fgwas/blob/master/man/fgwas_manual.pdf)
 
 Previous versions are available from the [Google Code repository](https://code.google.com/p/gwas/).
