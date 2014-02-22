@@ -20,7 +20,8 @@ Previous versions are available from the [Google Code repository](https://code.g
 ##What's new?##
 
 ###2/22/14###
-We've moved to github
+Release of version 0.3. Minor updates including sanity checks on input files.
+We've moved to github!
 
 ###1/21/14###
 Release of version 0.2. Includes support for conditional analysis of annotations using the -cond flag.
