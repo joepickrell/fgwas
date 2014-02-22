@@ -14,6 +14,7 @@ The most up-to-date release is: version 0.2
 
 A user guide is available here: fgwas v0.2 User Guide
 
+Previous versions are available from the [Google Code repository](https://code.google.com/p/gwas/).
 
 ##What's new?##
 
