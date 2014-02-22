@@ -1,0 +1,230 @@
+
+
+\documentclass[11pt,titlepage]{article} 
+\usepackage[numbers,square,sort&compress,authoryear]{natbib}
+%\usepackage[round]{natbib} 
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{url}
+\usepackage{caption}
+\captionsetup{labelsep = none}
+\usepackage{graphicx,rotating}
+\usepackage{lscape}
+\usepackage{color}
+
+\usepackage{setspace}
+\usepackage[table]{xcolor}
+%\bibliographystyle{elsart-harv}
+
+%\bibliographystyle{JRSS}
+\bibliographystyle{genres}
+
+\newcommand{\mb}[1]{\mathbf{#1}}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\doublespacing
+
+
+\renewcommand{\baselinestretch}{1.2}    %or 1.4 maybe?
+\setlength{\oddsidemargin}{0cm} \setlength{\textwidth}{6.5in}
+\setlength{\topmargin}{0in} \setlength{\topmargin}{-.5in}
+%this version seems to work better for pdf (?)
+\setlength{\textheight}{9.0in}
+%%
+%% Select one of the two - the second gets rid of comments.
+%% Leave the blank lines in
+\def\comment#1{
+
+\smallskip\noindent{\it [{#1}]}
+
+\smallskip\noindent
+}
+%\def\comment#1{}
+
+
+\begin{document}
+\title{User Manual for fgwas v.0.2}
+ \author{Joseph K. Pickrell}
+ \maketitle
+
+\tableofcontents
+\clearpage
+\section{Introduction}
+fgwas is a program for incorporating functional genomic information into a GWAS. It estimates the enrichment of GWAS hits in different annotation types (potentially jointly modeling multiple annotations) and can re-weight the GWAS using functional genomic information. The model works best if there are at least 20 independent unambiguous associations (with $P < 5\times10^{-8}$) in the genome. 
+
+\section{Installation}
+fgwas should run on any Unix or Unix-like (e.g., Linux or Mac OS X) system. It requires the GNU Scientific Library (\url{http://www.gnu.org/s/gsl/}; all testing was done with version 1.15), and the Boost Graph Library (\url{http://www.boost.org/}; you need version 1.42 of Boost or greater). Be sure these libraries are installed, and after downloading the source code, run the standard installation steps: \\
+\\
+\noindent \texttt{>tar -xvf fgwas-0.1.tar.gz}\\
+\noindent \texttt{>cd fgwas-0.1}\\
+\noindent \texttt{>./configure}\\
+\noindent \texttt{>make}\\
+\noindent \texttt{>make install}\\
+\section{Input file format}
+
+\subsection{GWAS and genomic data input}
+The input is a gzipped, space-delimited text file containing information about the GWAS and functional annotations you're interested in (this is generally hundreds of thousands to millions of SNPs). All SNPs must be ordered by position. The columns have no enforced order, but are identified from the header. If this is a study of a quantitative trait, the necessary columns are:
+
+\begin{enumerate}
+\item SNPID: a SNP identifier
+\item CHR: the chromosome for the SNP
+\item POS: the position of the SNP
+\item F: the allele frequency of one of the alleles of the SNP
+\item Z: the Z-score for from the association study
+\item N: the sample size used in the association study at this SNP (this can vary from SNP to SNP due to, e.g., missing data).
+\end{enumerate}
+
+Alternatively, if this is a case-control study, you need:
+
+\begin{enumerate}
+\item SNPID: a SNP identifier
+\item CHR: the chromosome for the SNP
+\item POS: the position of the SNP
+\item F: the allele frequency of one of the alleles of the SNP
+\item Z: the Z-score for from the association study
+\item NCASE: the number of cases used in the association study at this SNP
+\item NCONTROL: the number of controls used in the association study at this SNP
+\end{enumerate}
+
+Note: if you include a column labeled SE in the header of the file, this column will be taken as a direct estimate of the standard errors of the regression parameter and will override the sample size and allele frequency columns. 
+
+The remainder of the columns can have almost any name (apart from all those listed above). Columns can be of two types:
+
+\begin{enumerate}
+\item 1/0 for presence/absence. For example, there could be a column containing a "1" if the SNP falls in an exon and "0" otherwise.
+\item integer for distance. For example, there could be a column containing the distance to the nearest transcription start site for each SNP.
+\end{enumerate}
+
+\noindent For example, the following (in a gzipped text file) would be an allowed input:
+\\
+\\
+\noindent \texttt{SNPID CHR POS Z F N coding\_exon tss\_dist}\\
+\texttt{rs134344 chr5 56665 -1.2 0.3 9800 0 23550}\\
+\texttt{rs444329 chr5 106665 -0.4 0.9 9800 0 66783}\\
+\texttt{rs532 chr6 102435 4.4 0.09 9798 1 550}
+
+\subsection{Distance model} \label{dist_input}
+To use a distance annotation, the program needs a file with the distance model. This is a space-delimited file showing the distance bins to use. For example, imagine you have a column noting the distance to the nearest transcription start sites for each SNP, and you want to estimate a parameter for all SNPs within 5kb of a TSS. The distance model file would then be a file with the following single line:
+\\
+\\
+\noindent \texttt{0 5000} \\
+\section{Options}
+\subsection{SNP annotations}
+The main use of fgwas is to test whether SNPs that influence a trait are enriched or depleted in certain genomic annotations. The names of the annotations are defined by the header of the input file.
+\subsubsection{Test a presence/absence annotation for enrichment (\texttt{-w})}
+Most annotations are presence/absence annotations coded as 0/1 in the input file (for example, nonsynonymous SNPs might be coded as 1 in a column called ``nonsynonymous", which all other SNPs would be coded as 0 in that column). To tell fgwas which annotations to test, use the \texttt{-w} flag:\\
+
+\noindent \texttt{>fgwas -i input\_file.gz -w nonsynonymous}\\
+
+\noindent To build a model with multiple annotations, simply separate the annotations with a \texttt{+}:
+\\
+\\
+\noindent \texttt{>fgwas -i input\_file.gz -w nonsynonymous+annotation\_2+annotation\_3}
+
+\subsubsection{Test distance annotations for enrichment (\texttt{-dists})}
+To test a distance annotation, first create a distance model file as described in Section \ref{dist_input}. Then tell the program which column contains the distance annotation by giving an argument of the form [distance annotation]:[distance model]. For example, if the distance annotation is called ``tss\_dist" and the distance model is defined in a file called ``dist\_model", run:\\
+\\
+\noindent \texttt{>fgwas -i input\_file.gz -dists tss\_dist:dist\_model}\\
+
+\subsection{Regional annotations (\texttt{-dens})}
+The model can additionally estimate parameters at a region-level. Currently the only way to do this is to split regions into three groups according the their average value of some column (for example, distance to a transcription start site). Tell the program which column with an argument of the form [annotation] [low quantile] [high quantile]. For example, imagine each SNP has a distance to the nearest transcription start site in a column called ``tss\_dist". Then to estimate a parameter for regions in the top third and bottom third of average distance to a TSS, run:
+\\
+\\
+\noindent \texttt{>fgwas -i input\_file.gz -dens tss\_dist 0.33 0.67}
+
+\subsection{Setting the window size (\texttt{-k})}
+The default number of SNPs in a ``region" is 5,000. To change this, set the \texttt{-k} flag. For example:
+\\
+\\
+\noindent \texttt{>fgwas -i input\_file.gz -k 10000}\\
+
+\subsection{Setting the prior variance on effect size (\texttt{-v})}
+The default prior variance on the effect size of SNPs is 0.1. To change this, set the \texttt{-v} flag:
+\\
+\\
+\noindent \texttt{>fgwas -i input\_file.gz -v 0.5}\\
+
+\subsection{Changing the output file name stem (\texttt{-o})}
+The default name for the output files is ``fgwas". To change this set the \texttt{-o} flag. For example:
+\\
+\\
+\texttt{fgwas -i input\_file.gz -k 10000 -o bigregions}
+
+\subsection{Re-weighting GWAS and outputting posterior probabilities of association (\texttt{-print} and \texttt{-p})}
+The default behavior of fgwas is to estimate enrichment parameters but not to output re-weighted summary statistics. To output re-weighted summary statistics, use the \texttt{-print} flag. Note that this will tell the program to optimize a penalized likelihood, with penalty set by the \texttt{-p} flag (default is 0.2). For example:
+\\
+\\
+\texttt{fgwas -i input\_file.gz -print -p 0.3}
+
+\subsection{Cross-validation (\texttt{-xv})}
+When comparing models with parameters estimated under the penalized likelihood, the significance cannot be judged by standard means. Instead to estimate a cross-validation likelihood, use the \texttt{-xv} flag. For example:
+\\
+\\
+\texttt{fgwas -i input\_file.gz -print -p 0.3 -xv}
+\subsection{Only doing penalized likelihood estimation (\texttt{-onlyp})}
+In some cases (for example, when testing different penalized likelihoods) it is useful to skip the maximum likelihood estimation altogether and only perform estimation under the penalized likelihood. To do this, use the \texttt{-onlyp} flag. For example:
+\\
+\\
+\texttt{fgwas -i input\_file.gz -print -p 0.3 -onlyp}
+
+\subsection{Conditional analysis (\texttt{-cond})}
+It is often useful to test whether a given annotation adds information above and beyond that captured by a model. One approach to this is to estimate the parameters of a model, fix them to their maximum likelihood values, and then estimate an additional parameter and see if the confidence intervals on this added parameter overlap zero. To do this, use the \texttt{-cond} flag. For example, the following command with estimate an enrichment parameter for annot1, fix it to its maximum likelihood value, and the estimate an enrichment parameter for annot2:
+\\
+\\
+\texttt{fgwas -i input\_file.gz -w annot1 -cond annot2}
+
+
+
+\section{Output files}
+The main stem of the output files is set by the \texttt{-o} flag and defaults to ``fgwas". Under the default settings, the output files will be:
+
+\begin{enumerate}
+\item \texttt{fgwas.params}. The maximum likelihood parameter estimates for each parameter in the model. The columns are the name of the parameter (``pi" is the parameter for the prior probability that any given genomic region contains an association), the lower bound of the 95\% confidence interval on the parameter, the maximum likelihood estimate of the parameter, and the upper bound of the 95\% confidence interval on the parameter.
+\item \texttt{fgwas.llk}. The likelihood of the model. The lines are the log-likelihood of the model under the maximum likelihood parameter estimates, the number of parameters, and the AIC. 
+\end{enumerate}
+
+If you have used the \texttt{-print} flag to print the posterior probabilities of association, the model will additionally output:
+\begin{enumerate}
+\item \texttt{fgwas.ridgeparams}. The estimates of the parameters under the penalized likelihood. The first line of this file is the penalty used, then the penalized parameters estimates follow. If you have used the \texttt{-xv} flag, the last line will be the cross-validation likelihood.
+\item \texttt{fgwas.segbfs.gz}. The association statistics in each region of the genome defined in the model. The columns of this file are the block number, chromosome, start position, end position, maximum absolute value of Z-score, log regional Bayes factor, regional prior probability of association, log regional posterior odds for association, and the regional posterior probability of association. The annotations of the region (if any) are in the remaining columns. 
+\item \texttt{fgwas.bfs.gz}. The association statistics for each SNP in the genome as estimated by the model. The columns of this file are the SNP ID, the chromosome, genomic position, log Bayes factor, Z-score, estimated variance in the effect size, prior probability of association, two columns (pseudologPO and pseudoPPA) for internal use only, the posterior probability of association (conditional on there being an association in the region), and the region number. The annotations in the model (if any) then follow. 
+\end{enumerate}
+
+\section{Suggested workflow}
+The standard situation is that we have a GWAS for a given trait and a list of hundreds of annotations that are potentially enriched or depleted for associations. We suggest the following:
+\begin{enumerate}
+\item Test each annotation individually:
+\\
+\\
+\texttt{fgwas -i input\_file.gz -w annotation1 -o annotation1}\\
+\texttt{fgwas -i input\_file.gz -w annotation2 -o annotation2}\\
+\texttt{fgwas -i input\_file.gz -w annotation3 -o annotation3}\\
+\texttt{...}
+\item Find the annotation that most improves the likelihood of the model, then test it in combination with all other significant annotations (imagine in this case that annotation 1 gives the best likelihood):
+\\
+\\
+\texttt{fgwas -i input\_file.gz -w annotation1+annotation3 -o annotation3}\\
+\texttt{fgwas -i input\_file.gz -w annotation1+annotation8 -o annotation8}\\
+\texttt{fgwas -i input\_file.gz -w annotation1+annotation10 -o annotation10}\\
+\texttt{...}
+\item Keep adding annotations in this manner until there are no annotations that improve the likelihood.
+\item Switch to using the cross-validation likelihood, and find the penalty with the best cross-validation likelihood:
+\\
+\\
+\texttt{fgwas -i input\_file.gz -w annotation1+annotation8 -p 0.05 -xv -print -o p05}\\
+\texttt{fgwas -i input\_file.gz -w annotation1+annotation8 -p 0.10 -xv -print -o p10}\\
+\texttt{fgwas -i input\_file.gz -w annotation1+annotation8 -p 0.25 -xv -print -o p25}\\
+\texttt{...}
+\item Test dropping each annotation from the model, using the cross-validation likelihood (imagine that a penalty of 0.1 gave the best cross-validation likelihood):
+\\
+\\
+\texttt{fgwas -i input\_file.gz -w significant\_annotation1 -p 0.10 -xv -print -o drop1}\\
+\texttt{fgwas -i input\_file.gz -w annotation8 -p 0.10 -xv -print -o drop8}\\
+\item Keep dropping annotations as long as the cross-validation likelihood keeps increasing.
+\item Analyze the model with the maximum cross-validation likelihood.
+\end{enumerate}
+\clearpage
+
+\bibliography{../../bib}
+\end{document}
+

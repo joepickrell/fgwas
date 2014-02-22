@@ -1,0 +1,59 @@
+%    version = 1.01 of genres.sty 2007 Dec 15
+% 2007 Dec 15, 1.01 \usepackage{natbib}
+% 2005 Jan  3, 1.00 origin
+% from apalike.sty. source:
+% wget ftp://ftp.duke.edu/pub/tex-archive/biblio/bibtex/contrib/apalike.sty
+%
+% If I keep all the bibliography junk, it stupidly objects
+% to white space in the \cites.  But the only part I care about is
+% to remove the silly labels [] from the bibliography, and def biblable
+% does that.
+%
+% Tom Schneider
+
+% To allow control of reference format, this package calls natbib:
+% \usepackage{natbib}
+%
+% TO DO CITATIONS:
+%
+% \citep*{Petitjean.Olivier2007,Soussi2000,Soussi.Ishioka2005}.
+% gives (Petitjean, 2007; ...)
+%
+% \citet{el-Deiry.Vogelstein1992}
+% gives
+% el-Deiry(1992)
+%
+% See (example) documentation:
+% http://merkel.zoneo.net/Latex/natbib.php
+
+\def\@cite#1#2{(#1\if@tempswa , #2\fi)}
+\def\@biblabel#1{}
+
+%\newlength{\bibhang}
+%\setlength{\bibhang}{2em}
+%
+%\@ifundefined{chapter}{\def\thebibliography#1{\section*{References\@mkboth
+%  {REFERENCES}{REFERENCES}}\list
+%  {\relax}{\setlength{\labelsep}{0em}
+%	\setlength{\itemindent}{-\bibhang}
+%	\setlength{\leftmargin}{\bibhang}}
+%    \def\newblock{\hskip .11em plus .33em minus .07em}
+%    \sloppy\clubpenalty4000\widowpenalty4000
+%    \sfcode`\.=1000\relax}}%
+%{\def\thebibliography#1{\chapter*{Bibliography\@mkboth
+%  {BIBLIOGRAPHY}{BIBLIOGRAPHY}}\list
+%  {\relax}{\setlength{\labelsep}{0em}
+%	\setlength{\itemindent}{-\bibhang}
+%	\setlength{\leftmargin}{\bibhang}}
+%    \def\newblock{\hskip .11em plus .33em minus .07em}
+%    \sloppy\clubpenalty4000\widowpenalty4000
+%    \sfcode`\.=1000\relax}}
+%
+%\def\@citex[#1]#2{\if@filesw\immediate\write\@auxout{\string\citation{#2}}\fi
+%  \def\@citea{}\@cite{\@for\@citeb:=#2\do
+%    {\@citea\def\@citea{; }\@ifundefined
+%       {b@\@citeb}{{\bf ?}\@warning
+%       {Citation `\@citeb' on page \thepage \space undefined}}%
+%{\csname b@\@citeb\endcsname}}}{#1}}
+
+\usepackage{natbib}
