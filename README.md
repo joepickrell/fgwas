@@ -33,6 +33,10 @@ This will create an executable file called fgwas in the src directory. The most 
 
 >./configure LDFLAGS=-L/opt/local/lib
 
+Example data is available in the test_data/ directory. To ensure that fgwas is working, run:
+
+> ./src/fgwas -i test_data/test_LDL.fgwas_in.gz -w ens_coding_exon
+
 A user guide is available here: [fgwas v0.2 User Guide](https://github.com/joepickrell/fgwas/blob/master/man/fgwas_manual.pdf)
 
 Previous versions are available from the [Google Code repository](https://code.google.com/p/gwas/).
