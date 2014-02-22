@@ -14,15 +14,21 @@ The underlying model is described in: Pickrell JK (2014) [Joint analysis of func
 
 ###Dependencies###
 fgwas depends on:
-*the [GNU Scientific Library](http://www.gnu.org/software/gsl/)
-*the [Boost Libraries](http://www.boost.org)
+
+-the [GNU Scientific Library](http://www.gnu.org/software/gsl/)
+
+-the [Boost Libraries](http://www.boost.org)
 
 ###Quick Start###
 The most up-to-date release is: version 0.3. See ["Releases"](https://github.com/joepickrell/fgwas/releases) above.
 After downloading fgwas-0.3.tar.gz at the link above, run:
+
 >tar -xvf fgwas-0.3.tar.gz
+
 >cd fgwas-0.3
+
 >./configure
+
 >make
 
 A user guide is available here: [fgwas v0.2 User Guide](https://github.com/joepickrell/fgwas/blob/master/man/fgwas_manual.pdf)
