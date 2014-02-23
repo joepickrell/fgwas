@@ -51,7 +51,7 @@ void SNPs::check_input(){
 
 		int st = it->first;
 		int sp = it->second;
-		totalsize += (d[sp].pos-d[st].pos);
+		totalsize += (d[sp-1].pos-d[st].pos);
 		int prevpos = d[st].pos;
 		string prevchr = d[st].chr;
 		for (int i= st+1; i < sp; i++){
