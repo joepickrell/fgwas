@@ -14,9 +14,8 @@ using namespace std;
 
 
 void printopts(){
-        cout << "\nfgwas v. 0.3\n";
-        cout << "$Revision: 70 $\n\n";
-        cout << "by Joe Pickrell (joseph_pickrell@hms.harvard.edu)\n\n";
+        cout << "\nfgwas v. 0.3.1\n";
+        cout << "by Joe Pickrell (jkpickrell@nygenome.org)\n\n";
         cout << "-i [file name] input file w/ Z-scores\n";
         cout << "-o [string] stem for names of output files\n";
         cout << "-w [string] which annotation(s) to use. Separate multiple annotations with plus signs\n";
