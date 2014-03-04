@@ -49,6 +49,7 @@ public:
 	bool onlyp;
 	bool cond;
 	string testcond_annot;
+	bool pairwise;
 };
 
 

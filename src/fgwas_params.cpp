@@ -26,6 +26,7 @@ Fgwas_params::Fgwas_params(){
 	onlyp = false;
 	cond = false;
 	testcond_annot = "";
+	pairwise = false;
 }
 
 void Fgwas_params::print_stdout(){
@@ -50,6 +51,9 @@ void Fgwas_params::print_stdout(){
 	else cout <<"no\n";
 	cout << ":: 10-fold cross-validation?: ";
 	if (xv) cout << "yes\n";
+	else cout << "no\n";
+	cout << ":: Pairwise?: ";
+	if (pairwise) cout << "yes\n";
 	else cout << "no\n";
 	//cout << ":: Drop chromosome: ";
 	//if (!dropchr) cout << "None\n";
