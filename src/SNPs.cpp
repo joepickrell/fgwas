@@ -13,7 +13,6 @@ SNPs::SNPs(){
 }
 
 
-
 SNPs::SNPs(Fgwas_params *p){
 	params = p;
 	params->print_stdout();
