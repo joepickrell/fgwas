@@ -1361,6 +1361,8 @@ int SNPs::golden_section_seglambda_ci(double min, double guess, double max, doub
         }
 }
 
+
+
 int SNPs::golden_section_segpi_ci(double min, double guess, double max, double tau, double target, int * nit){
         double x;
         *nit = *nit +1;
