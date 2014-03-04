@@ -675,7 +675,11 @@ void SNPs::make_segments_finemap(){
 	int wseg = d[0].chunknumber;
 	for (int i = 1; i < d.size(); i++){
 		int testseg = d[i].chunknumber;
-		if (testseg < wseg || testseg > wseg) {
+		if (testseg < wseg){
+			cerr<< "ERROR: segment number "<< testseg << " occurs after "<< wseg << ". For fine-mapping, order the input file by SEGNUMBER.\n";
+			exit(1);
+		}
+		if (testseg > wseg) {
 			segments.push_back(make_pair(sstart, i));
 			sstart = i;
 			wseg = testseg;
