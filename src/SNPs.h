@@ -70,6 +70,7 @@ public:
 	void GSL_xv_optim(set<int>, bool);
 	void GSL_optim_fine();
 	void GSL_optim_ridge();
+	void GSL_optim_ridge_fine();
 	double llk(int);
 	double llk();
 	double llk_ridge();
@@ -106,6 +107,7 @@ struct GSL_params{
 extern double GSL_llk(const gsl_vector *, void *GSL_params);
 extern double GSL_llk_ridge(const gsl_vector *, void *GSL_params);
 extern double GSL_llk_fine(const gsl_vector *, void *GSL_params);
+extern double GSL_llk_ridge_fine(const gsl_vector *, void *GSL_params);
 extern double GSL_llk_xv(const gsl_vector *, void *GSL_params);
 
 #endif /* SNPS_H_ */
