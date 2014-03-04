@@ -69,7 +69,7 @@ void SNPs::check_input(){
 	}
 	float meansize = (float) totalsize /  (float) segments.size();
 	meansize = meansize/1000000.0;
-	cout << "Mean segment size: "<< meansize << " Mb\n";
+	cout << "Number of segments: "<< segments.size()<< "\nMean segment size: "<< meansize << " Mb\n";
 	if (meansize > 10.0){
 		cout << "\n****\n**** WARNING: mean segment size is over 10Mb, this often causes convergence problems (in human data). Consider reducing window size (using -k).\n****\n\n"; cout.flush();
 	}
