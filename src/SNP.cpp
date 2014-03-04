@@ -11,6 +11,8 @@ SNP::SNP(){
 
 }
 
+
+
 SNP::SNP(string rs, string c, int p, int nsamp, double fr, double zscore, double prior, vector<bool> an, vector<int> ds, vector<vector<pair<int, int> > > dmodels){
 	id = rs;
 	chr = c;
