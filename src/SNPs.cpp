@@ -576,6 +576,11 @@ void SNPs::print(string outfile, string outfile2){
 		}
 		seglPO = log(segbf)+ seglpio;
 		segPPA = exp(seglPO)/ (1+ exp(seglPO));
+		//if fine mapping, all priors are 1
+		if (params->finemap){
+			segp = 1;
+			segPPA = 1;
+		}
 		out2 << maxZ<< " "<< log(segbf) << " " << segp << " "<< seglPO << " "<< segPPA;
 		for (int i = 0; i < nsegannot; i++) out2 << " "<< segannot[segnum][i];
 		out2 << "\n";
