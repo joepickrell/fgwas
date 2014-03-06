@@ -43,7 +43,7 @@
 
 
 \begin{document}
-\title{User Manual for fgwas v.0.2}
+\title{User Manual for fgwas v.0.3.x}
  \author{Joseph K. Pickrell}
  \maketitle
 
@@ -103,6 +103,16 @@ The remainder of the columns can have almost any name (apart from all those list
 \texttt{rs444329 chr5 106665 -0.4 0.9 9800 0 66783}\\
 \texttt{rs532 chr6 102435 4.4 0.09 9798 1 550}
 
+\subsubsection{Fine-mapping/eQTL input (\texttt{-fine})} \label{finemap}
+In the fine-mapping/eQTL case, we assume that there are a set of regions of interest (for example, regions containing the top 50 hits in a GWAS, or the cis regions surrounding 400 genes with eQTLs). In this case, the file format is the same as above with two exceptions. First, there is an additional column labeled SEGNUMBER. Each region should have a unique SEGNUMBER identified. Second, the file should be ordered according to this column (rather by chromosome and position). For example, the following (in a gzipped text file) would be an allowed input:
+\\
+
+\noindent \texttt{SNPID CHR POS Z F N SEGNUMBER coding\_exon tss\_dist}\\
+\texttt{rs134344 chr5 56665 -1.2 0.3 9800 1 0 23550}\\
+\texttt{rs444329 chr5 106665 -0.4 0.9 9800  1 0 66783}\\
+\texttt{rs532 chr6 102435 4.4 0.09 9798 2 1 550}\\
+\texttt{rs538 chr6 103355 1.2 0.48 9798 2 0 35354}
+
 \subsection{Distance model} \label{dist_input}
 To use a distance annotation, the program needs a file with the distance model. This is a space-delimited file showing the distance bins to use. For example, imagine you have a column noting the distance to the nearest transcription start sites for each SNP, and you want to estimate a parameter for all SNPs within 5kb of a TSS. The distance model file would then be a file with the following single line:
 \\
@@ -144,34 +154,41 @@ The default prior variance on the effect size of SNPs is 0.1. To change this, se
 \\
 \noindent \texttt{>fgwas -i input\_file.gz -v 0.5}\\
 
+\subsection{Fine-mapping study input format (\texttt{-fine})}
+To tell the program to expect an input file in fine-mapping format (see Section \ref{finemap} above), use the \texttt{-fine} flag For example:
+\\
+\\
+\texttt{>fgwas -i input\_finemap\_file.gz -fine}
+
 \subsection{Changing the output file name stem (\texttt{-o})}
 The default name for the output files is ``fgwas". To change this set the \texttt{-o} flag. For example:
 \\
 \\
-\texttt{fgwas -i input\_file.gz -k 10000 -o bigregions}
+\texttt{>fgwas -i input\_file.gz -k 10000 -o bigregions}
+
 
 \subsection{Re-weighting GWAS and outputting posterior probabilities of association (\texttt{-print} and \texttt{-p})}
 The default behavior of fgwas is to estimate enrichment parameters but not to output re-weighted summary statistics. To output re-weighted summary statistics, use the \texttt{-print} flag. Note that this will tell the program to optimize a penalized likelihood, with penalty set by the \texttt{-p} flag (default is 0.2). For example:
 \\
 \\
-\texttt{fgwas -i input\_file.gz -print -p 0.3}
+\texttt{>fgwas -i input\_file.gz -print -p 0.3}
 
 \subsection{Cross-validation (\texttt{-xv})}
 When comparing models with parameters estimated under the penalized likelihood, the significance cannot be judged by standard means. Instead to estimate a cross-validation likelihood, use the \texttt{-xv} flag. For example:
 \\
 \\
-\texttt{fgwas -i input\_file.gz -print -p 0.3 -xv}
+\texttt{>fgwas -i input\_file.gz -print -p 0.3 -xv}
 \subsection{Only doing penalized likelihood estimation (\texttt{-onlyp})}
 In some cases (for example, when testing different penalized likelihoods) it is useful to skip the maximum likelihood estimation altogether and only perform estimation under the penalized likelihood. To do this, use the \texttt{-onlyp} flag. For example:
 \\
 \\
-\texttt{fgwas -i input\_file.gz -print -p 0.3 -onlyp}
+\texttt{>fgwas -i input\_file.gz -print -p 0.3 -onlyp}
 
 \subsection{Conditional analysis (\texttt{-cond})}
 It is often useful to test whether a given annotation adds information above and beyond that captured by a model. One approach to this is to estimate the parameters of a model, fix them to their maximum likelihood values, and then estimate an additional parameter and see if the confidence intervals on this added parameter overlap zero. To do this, use the \texttt{-cond} flag. For example, the following command with estimate an enrichment parameter for annot1, fix it to its maximum likelihood value, and the estimate an enrichment parameter for annot2:
 \\
 \\
-\texttt{fgwas -i input\_file.gz -w annot1 -cond annot2}
+\texttt{>fgwas -i input\_file.gz -w annot1 -cond annot2}
 
 
 
