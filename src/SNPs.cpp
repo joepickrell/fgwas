@@ -47,13 +47,18 @@ SNPs::SNPs(Fgwas_params *p){
 }
 
 void SNPs::check_input(){
-	unsigned long int totalsize = 0;
+
+	double meansize = 0.0;
+	int nseg = segments.size();
 	for (vector<pair<int, int> >::iterator it = segments.begin(); it != segments.end(); it++){
 
 		int st = it->first;
 		int sp = it->second;
+		int toadd = d[sp-1].pos- d[st].pos;
 
-		totalsize += ((d[sp-1].pos)- (d[st].pos));
+
+		meansize += ((double) toadd/ 1000000.0) / (double) nseg;
+
 		//cout << totalsize << "\n";
 		int prevpos = d[st].pos;
 		string prevchr = d[st].chr;
@@ -69,9 +74,8 @@ void SNPs::check_input(){
 		}
 	}
 	//cout << totalsize << " "<< segments.size() << "\n"; cout.flush();
-	float meansize = (float) totalsize /  (float) segments.size();
-	meansize = meansize/1000000.0;
-	cout << "Number of segments: "<< segments.size()<< "\nMean segment size: "<< meansize << " Mb\n";
+
+	cout << "Number of segments: "<< segments.size()<< "\nMean segment size: "<< meansize<< " Mb\n";
 	if (meansize > 10.0){
 		cout << "\n****\n**** WARNING: mean segment size is over 10Mb, this often causes convergence problems (in human data). Consider reducing window size (using -k).\n****\n\n"; cout.flush();
 	}
