@@ -37,8 +37,6 @@ void printopts(){
 }
 
 
-
-
 int main(int argc, char *argv[]){
 	Fgwas_params p;
 
