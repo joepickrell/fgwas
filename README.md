@@ -19,11 +19,11 @@ fgwas depends on:
 
 ###Quick Start###
 The most up-to-date release is: version 0.3.1. See ["Releases"](https://github.com/joepickrell/fgwas/releases) above.
-After downloading fgwas-0.3.tar.gz at the link above, run:
+After downloading fgwas-0.3.2.tar.gz at the link above, run:
 
->tar -xvf fgwas-0.3.1.tar.gz
+>tar -xvf fgwas-0.3.2.tar.gz
 
->cd fgwas-0.3.1
+>cd fgwas-0.3.2
 
 >./configure
 
@@ -37,18 +37,7 @@ Example data is available in the test_data/ directory. To ensure that fgwas is w
 
 > ./src/fgwas -i test_data/test_LDL.fgwas_in.gz -w ens_coding_exon
 
-A user guide is available here: [fgwas v0.2 User Guide](https://github.com/joepickrell/fgwas/blob/master/man/fgwas_manual.pdf)
+A user guide is available here: [fgwas v0.3.x User Guide](https://github.com/joepickrell/fgwas/blob/master/man/fgwas_manual.pdf)
 
 Previous versions are available from the [Google Code repository](https://code.google.com/p/gwas/).
 
-##What's new?##
-
-###2/22/14###
-Release of version 0.3. Minor updates including sanity checks on input files.
-We've moved to github!
-
-###1/21/14###
-Release of version 0.2. Includes support for conditional analysis of annotations using the -cond flag.
-
-###11/8/13###
-First public release, version 0.1
