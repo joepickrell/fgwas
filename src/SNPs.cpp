@@ -47,13 +47,14 @@ SNPs::SNPs(Fgwas_params *p){
 }
 
 void SNPs::check_input(){
-	int totalsize = 0;
+	unsigned long int totalsize = 0;
 	for (vector<pair<int, int> >::iterator it = segments.begin(); it != segments.end(); it++){
 
 		int st = it->first;
 		int sp = it->second;
-		//cout << st << " "<< sp << "\n";
-		totalsize += (d[sp-1].pos-d[st].pos);
+
+		totalsize += ((d[sp-1].pos)- (d[st].pos));
+		//cout << totalsize << "\n";
 		int prevpos = d[st].pos;
 		string prevchr = d[st].chr;
 		for (int i= st+1; i < sp; i++){
@@ -67,6 +68,7 @@ void SNPs::check_input(){
 			prevchr = testchr;
 		}
 	}
+	//cout << totalsize << " "<< segments.size() << "\n"; cout.flush();
 	float meansize = (float) totalsize /  (float) segments.size();
 	meansize = meansize/1000000.0;
 	cout << "Number of segments: "<< segments.size()<< "\nMean segment size: "<< meansize << " Mb\n";
