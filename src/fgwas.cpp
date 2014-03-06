@@ -14,7 +14,7 @@ using namespace std;
 
 
 void printopts(){
-        cout << "\nfgwas v. 0.3.1\n";
+        cout << "\nfgwas v. 0.3.2\n";
         cout << "by Joe Pickrell (jkpickrell@nygenome.org)\n\n";
         cout << "-i [file name] input file w/ Z-scores\n";
         cout << "-o [string] stem for names of output files\n";
@@ -69,18 +69,14 @@ int main(int argc, char *argv[]){
     if (cmdline.HasSwitch("-w")){
     	vector<string> strs;
     	string s = cmdline.GetArgument("-w", 0);
-    	//cout << s << "\n"; cout.flush();
     	boost::split(strs, s ,boost::is_any_of("+"));
     	for (int i  = 0; i < strs.size(); i++) {
-    		//cout << strs[i] << "\n";
-    		//cout.flush();
     		p.wannot.push_back( strs[i] );
     	}
     }
     if (cmdline.HasSwitch("-dists")){
      	vector<string> strs;
      	string s = cmdline.GetArgument("-dists", 0);
-     	//cout << s << "\n"; cout.flush();
      	boost::split(strs, s ,boost::is_any_of("+"));
      	for (int i  = 0; i < strs.size(); i++) {
      		vector<string> strs2;
@@ -103,10 +99,12 @@ int main(int argc, char *argv[]){
     }
 
 	SNPs s(&p);
-	//s.print_segments();
-	//exit(1);
+
+	//if doing unpenalized optimization
 	if (!p.onlyp){
 		s.GSL_optim();
+
+		// conditional analysis
 		if (p.cond){
 			string llkoutfile = p.outstem+".llk";
 			ofstream lkout(llkoutfile.c_str());
@@ -127,6 +125,8 @@ int main(int argc, char *argv[]){
 			if (cond_cis.first.second == 0) out << cond_cis.second.second << "\n";
 			else out << "fail\n";
 		}
+
+		//standard analysis
 		else{
 			string llkoutfile = p.outstem+".llk";
 			ofstream lkout(llkoutfile.c_str());
@@ -142,6 +142,7 @@ int main(int argc, char *argv[]){
 			ofstream out(outparam.c_str());
 			out << "parameter CI_lo estimate CI_hi\n";
 
+			//not fine-mapping (there are segment-level annotations)
 			if (!p.finemap){
 				pair<pair<int, int>,  pair<double, double> > sci = cis[0];
 				out << "pi_region ";
@@ -160,6 +161,8 @@ int main(int argc, char *argv[]){
 					else out << "fail\n";
 				}
 			}
+
+			//print annotations
 			for (int i = 0; i < s.lambdas.size(); i++){
 				out << s.annotnames[i] << "_ln ";
 				int index = i+1+s.seglambdas.size();
@@ -169,12 +172,10 @@ int main(int argc, char *argv[]){
 				if (cis[index].first.second == 0) out << cis[index].second.second << "\n";
 				else out << "fail\n";
 			}
-		//if (p.xv){
-		//	double xvlk = s.cross10(false);
-		//	lkout << "X-Validation ln(lk): "<< xvlk << "\n";
-		//}
 		}
 	}
+
+	// penalized likelihood
 	if ( (p.print || p.xv) && !p.cond) {
 		s.GSL_optim_ridge();
 		string outridge = p.outstem+".ridgeparams";
@@ -186,6 +187,7 @@ int main(int argc, char *argv[]){
 			double xvlk = s.cross10(true);
 			outr << "X-validation penalize ln(lk): "<< xvlk << "\n";
 		}
+		// print the PPAs
 		if (p.print) s.print(p.outstem+".bfs.gz", p.outstem+".segbfs.gz");
 	}
 

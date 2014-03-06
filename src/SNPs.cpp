@@ -16,20 +16,28 @@ SNPs::SNPs(){
 SNPs::SNPs(Fgwas_params *p){
 	params = p;
 	params->print_stdout();
+
+	//read distance models
 	for (vector<string>::iterator it = params->distmodels.begin(); it != params->distmodels.end(); it++) dmodels.push_back( read_dmodel(*it));
-	//cout << "reading from "<< infile << "\n"; cout.flush();
+
+	//read input file
 	if (params->zformat) load_snps_z(params->infile, params->V, params->wannot, params->dannot, params->segannot);
 	else {
 		cerr << "ERROR: need z-score format for now\n";
 		exit(1);
-		//load_snps(infile, prior, annot);
 	}
+
+	//make segments
 	if (params->finemap) make_segments_finemap();
 	else{
 		make_chrsegments();
 		make_segments(params->K);
 	}
+
+	//double-check input quality
 	check_input();
+
+	//initialize
 	snppri.clear();
 	segpi = 0.001;
 	init_segpriors();
@@ -59,13 +67,12 @@ void SNPs::check_input(){
 
 		meansize += ((double) toadd/ 1000000.0) / (double) nseg;
 
-		//cout << totalsize << "\n";
 		int prevpos = d[st].pos;
 		string prevchr = d[st].chr;
 		for (int i= st+1; i < sp; i++){
 			string testchr = d[i].chr;
 			int testpos = d[i].pos;
-			if (testchr == prevchr and prevpos > testpos){
+			if (testchr == prevchr and prevpos > testpos){  //test that each segment is only a single chromosome, is ordered
 				cerr<< "ERROR: SNPs out of order\nChromosome "<<testchr << ". Position "<< prevpos << " seen before "<< testpos<< "\n";
 				exit(1);
 			}
@@ -73,7 +80,6 @@ void SNPs::check_input(){
 			prevchr = testchr;
 		}
 	}
-	//cout << totalsize << " "<< segments.size() << "\n"; cout.flush();
 
 	cout << "Number of segments: "<< segments.size()<< "\nMean segment size: "<< meansize<< " Mb\n";
 	if (meansize > 10.0){
@@ -87,7 +93,7 @@ vector<pair<int, int> > SNPs::read_dmodel(string infile){
 	struct stat stFileInfo;
 	int intStat;
 	string st, buf;
-	//cout << "reading " << infile << "\n";
+
 	intStat = stat(infile.c_str(), &stFileInfo);
 	if (intStat !=0){
 		std::cerr<< "ERROR: cannot open file " << infile << "\n";
@@ -137,7 +143,6 @@ void SNPs::init_segpriors(){
 	sort(means2sort.begin(), means2sort.end());
 	double locutoff = means2sort[floor( (double) means2sort.size()* params->loquant ) ];
 	double hicutoff = means2sort[floor( (double) means2sort.size()* params->hiquant ) ];
-	//cout << locutoff << " "<< hicutoff << "\n"; cout.flush();
 	for (int i = 0; i < segments.size(); i++){
 		vector<bool> annots;
 		double m = segmeans[i];
@@ -305,6 +310,8 @@ void SNPs::load_snps_z(string infile, double prior, vector<string> annot, vector
     	double alfreq = atof(line[mafindex].c_str());
     	if (alfreq < 1e-8) continue;
     	double z = atof(line[zindex].c_str());
+
+    	//quantitative trait
     	if (!params->cc){
     		int N = atoi(line[Nindex].c_str());
     		string chr = line[chrindex];
@@ -334,6 +341,8 @@ void SNPs::load_snps_z(string infile, double prior, vector<string> annot, vector
     			s.chunknumber = snumber;
     		}
     		if (segannot.size() > 0) s.dens = atof(line[segannotindex].c_str());
+
+    		//if there's SE in the header
     		if (override_v){
     			float se = atof(line[seindex].c_str());
     			s.V = se*se;
@@ -349,10 +358,10 @@ void SNPs::load_snps_z(string infile, double prior, vector<string> annot, vector
     		}
     		d.push_back(s);
     	}
+
+    	//case-control study
     	else{
-    		//cout << "reading "<< rs << "\n"; cout.flush();
       		int Ncase = atoi(line[Ncaseindex].c_str());
-      		//cout << "Ncase: "<< Ncase << " "<< Ncaseindex << "\n"; cout.flush();
       		int Ncontrol = atoi(line[Ncontrolindex].c_str());
       		string chr = line[chrindex];
       		if (params->dropchr and chr == params->chrtodrop) continue;
@@ -378,11 +387,12 @@ void SNPs::load_snps_z(string infile, double prior, vector<string> annot, vector
     			s.chunknumber = snumber;
     		}
       		if (segannot.size() > 0) s.dens = atof(line[segannotindex].c_str());
+
+      		//if there's SE in the header
        		if (override_v){
        			float se = atof(line[seindex].c_str());
        			s.V = se*se;
        			s.BF = s.calc_logBF();
-       			//cout << s.id << " "<< s.V << " "<< s.BF << " "<< s.Z << " "<< s.f<< "\n";
        		}
       		if (params->cond){
       			if (line[condindex] == "1") s.condannot =true;
