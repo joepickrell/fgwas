@@ -860,8 +860,7 @@ double SNPs::llk(int which){
 	int st = seg.first;
 	int sp = seg.second;
 	double lsum = snppri[st]+ d[st].BF;
-	//double lsum = log(snppri[st])+ d[st].BF;
-	st++;
+
 	for (int i = st; i < sp ; i++){
 		double tmp2add = snppri[i]+ d[i].BF;
 		//double tmp2add = log(snppri[i])+ d[i].BF;
