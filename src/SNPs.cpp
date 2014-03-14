@@ -62,6 +62,7 @@ void SNPs::check_input(){
 
 		int st = it->first;
 		int sp = it->second;
+		cout << st <<  " "<< sp << "\n";
 		int toadd = d[sp-1].pos- d[st].pos;
 
 
@@ -675,12 +676,10 @@ void SNPs::make_segments(int size){
 			}
 		}
 		int nseg = length/bestsize;
-		//cout << starti << " "<< endi << " "<< bestsize << " "<< nseg<< "\n";
 		for (int i = 0; i < nseg; i++){
 			int sstart = starti+i*bestsize;
 			int send = starti+i*bestsize+bestsize;
 			if (i > (nseg-2))	send = endi;
-			//cout << i << " "<< nseg << " "<< starti << " "<< endi << " "<< sstart << " "<< send << "\n";
 			segments.push_back(make_pair(sstart, send));
 			for (int i = sstart ; i < send ; i++) d[i].chunknumber = counter;
 			counter++;
@@ -860,7 +859,7 @@ double SNPs::llk(int which){
 	int st = seg.first;
 	int sp = seg.second;
 	double lsum = snppri[st]+ d[st].BF;
-
+	st++;
 	for (int i = st; i < sp ; i++){
 		double tmp2add = snppri[i]+ d[i].BF;
 		//double tmp2add = log(snppri[i])+ d[i].BF;
