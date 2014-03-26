@@ -14,7 +14,7 @@ using namespace std;
 
 
 void printopts(){
-        cout << "\nfgwas v. 0.3.2\n";
+        cout << "\nfgwas v. 0.3.3\n";
         cout << "by Joe Pickrell (jkpickrell@nygenome.org)\n\n";
         cout << "-i [file name] input file w/ Z-scores\n";
         cout << "-o [string] stem for names of output files\n";
