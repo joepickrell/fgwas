@@ -768,28 +768,28 @@ void SNPs::set_segpriors(){
 
 
 void SNPs::set_priors(int which){
+	//
+	// prior on SNP is exp(x_i)/ sum_j (exp(x_j))
+	//
+
 	pair<int, int> seg = segments[which];
 	int st = seg.first;
 	int sp = seg.second;
-	double sumxs = 0;
-	for (int i = st; i < sp ;i++) {
-		//cout << i << " "<< d[i].get_x(lambdas) << "\n";
-		//double tmpx = exp(d[i].get_x(lambdas));
+
+	double sumxs = d[st].get_x(lambdas);
+	snppri[st] = sumxs;
+	for (int i = st+1; i < sp ;i++) {
 		double tmpx = d[i].get_x(lambdas);
 		snppri[i] = tmpx;
-		//sumxs += tmpx;
 		sumxs = sumlog(sumxs, tmpx);
 	}
 	for (int i = st; i <  sp ; i++) {
-		//snppri[i] = snppri[i]/sumxs;
 		//doing this in log space
 		snppri[i] = snppri[i] - sumxs;
 		if (!isfinite(snppri[i])){
 			cerr << "ERROR: prior for SNP "<< i << " is " << snppri[i] << "\n";
 			exit(1);
 		}
-		//if (snppri[i] < DBL_MIN) snppri[i] = DBL_MIN;
-		//cout << i << " "<< snppri[i] << "\n";
 	}
 }
 
