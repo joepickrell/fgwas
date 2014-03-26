@@ -62,7 +62,7 @@ void SNPs::check_input(){
 
 		int st = it->first;
 		int sp = it->second;
-		cout << st <<  " "<< sp << "\n";
+		//cout << st <<  " "<< sp << "\n";
 		int toadd = d[sp-1].pos- d[st].pos;
 
 
@@ -718,7 +718,7 @@ void SNPs::make_chrsegments(){
 		int tmppos = d[i].pos;
 		string tmpchr = d[i].chr;
 		if (tmpchr != startchr){
-			int end = i-1;
+			int end = i;
 			chrsegments.push_back(make_pair(start, end));
 			start = i;
 			startpos = d[i].pos;
@@ -726,7 +726,7 @@ void SNPs::make_chrsegments(){
 		}
 		i++;
 	}
-	int end = i-1;
+	int end = i;
 	chrsegments.push_back(make_pair(start, end));
 }
 
