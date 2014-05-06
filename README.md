@@ -7,6 +7,7 @@ fgwas is a command line tool for integrating functional genomic information into
 2. Can we use these enrichments (if they exist) to identify novel loci influencing the trait?
 
 The underlying model is described in: Pickrell JK (2014) [Joint analysis of functional genomic data and genome-wide association studies of 18 human traits](http://biorxiv.org/content/early/2014/01/22/000752). bioRxiv 10.1101/000752
+
 The annotations used in this paper are available [from GitHub](https://github.com/joepickrell/1000-genomes).
 
 ##Installation##
