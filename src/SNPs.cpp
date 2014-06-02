@@ -480,17 +480,46 @@ pair< pair<int, int>, pair<double, double> > SNPs::get_cis_segpi(){
 	double test =  log(startsegpi) - log(1-startsegpi);
 
 	double min = -10.0;
+	if (min > test) min = test - 10;
 	double max = 10.0;
-	int nit = 0;
-	double start = (test+max)/2;
+	if (max < test) max = test+ 10;
+	int convhi, convlo;
+	double hi, lo;
 	double tau = 0.001;
-	int convhi = golden_section_segpi_ci(test, start, max, tau, thold,  &nit);
-	double hi = segpi;
+	// see if value at max is less than thold
+	segpi = 1.0  / ( 1.0 + exp(-max));
+	set_priors();
+	double maxllk = llk();
+
+	//if yes, do optimization
+	if (maxllk < thold){
+		int nit = 0;
+		double start = (test+max)/2;
+
+		convhi = golden_section_segpi_ci(test, start, max, tau, thold,  &nit);
+		hi = segpi;
+	}
+	else{
+		hi =1.0  / ( 1.0 + exp(-max));
+		convhi = 2;
+	}
 	cout << hi << " "<< llk() << " hi\n";
-	start = (test+min)/2;
-	nit = 0;
-	int convlo = golden_section_segpi_ci(min, start, test, tau, thold, &nit);
-	double lo = segpi;
+
+	// same for min
+	segpi = 1.0  / ( 1.0 + exp(-min));
+	set_priors();
+	double minllk = llk();
+
+	if (minllk < thold){
+		double start = (test+min)/2;
+		int nit = 0;
+		convlo = golden_section_segpi_ci(min, start, test, tau, thold, &nit);
+		lo = segpi;
+	}
+	else{
+		lo = 1.0  / ( 1.0 + exp(-min));
+		convlo = 2;
+	}
 	cout << lo << " "<< llk() << " lo\n";
 	pair<int, int> conv = make_pair(convlo, convhi);
 	pair<double, double> ci = make_pair(lo, hi);
@@ -512,12 +541,38 @@ pair< pair<int, int>, pair<double, double> > SNPs::get_cis_lambda(int which){
 	if (min > 0) min = -20.0;
 	double start = (test+max)/2;
 	double tau = 0.001;
-	int convhi = golden_section_lambda_ci(test, start, max, tau, which, thold);
-	double hi = lambdas[which];
+	double hi, lo;
+	int convhi, convlo;
+
+
+	//test if maximum is less than thold
+	lambdas[which] = max;
+	set_priors();
+	double maxllk = llk();
+	if (maxllk < thold){
+		convhi = golden_section_lambda_ci(test, start, max, tau, which, thold);
+		hi = lambdas[which];
+	}
+	else{
+		convhi = 2;
+		hi = max;
+	}
+
 	cout << hi << " "<< llk() << " hi\n";
+
+	//same for minimum
+	lambdas[which] = min;
+	set_priors();
+	double minllk = llk();
 	start = (test+min)/2;
-	int convlo = golden_section_lambda_ci(min, start, test, tau, which, thold);
-	double lo = lambdas[which];
+	if (minllk < thold){
+		convlo = golden_section_lambda_ci(min, start, test, tau, which, thold);
+		lo = lambdas[which];
+	}
+	else{
+		convlo = 2;
+		lo = min;
+	}
 	cout << lo << " "<< llk() << " lo\n";
 	pair<int, int> conv = make_pair(convlo, convhi);
 	pair<double, double> ci = make_pair(lo, hi);
@@ -540,12 +595,37 @@ pair< pair<int, int>, pair<double, double> > SNPs::get_cis_seglambda(int which){
 	if (min > 0) min = -20.0;
 	double start = (test+max)/2;
 	double tau = 0.001;
-	int convhi = golden_section_seglambda_ci(test, start, max, tau, which, thold);
-	double hi = seglambdas[which];
+	int convhi, convlo;
+	double hi, lo;
+
+
+	// test hi
+	seglambdas[which] = max;
+	set_priors();
+	double maxllk = llk();
+	if (maxllk < thold){
+		convhi = golden_section_seglambda_ci(test, start, max, tau, which, thold);
+		hi = seglambdas[which];
+	}
+	else{
+		convhi = 2;
+		hi = max;
+	}
 	cout << hi << " "<< llk() << " hi\n";
+
+	seglambdas[which] = min;
+	set_priors();
+	double minllk = llk();
+
 	start = (test+min)/2;
-	int convlo = golden_section_seglambda_ci(min, start, test, tau, which, thold);
-	double lo = seglambdas[which];
+	if (minllk < thold){
+		convlo = golden_section_seglambda_ci(min, start, test, tau, which, thold);
+		lo = seglambdas[which];
+	}
+	else{
+		convlo = 2;
+		lo = max;
+	}
 	cout << lo << " "<< llk() << " lo\n";
 	pair<int, int> conv = make_pair(convlo, convhi);
 	pair<double, double> ci = make_pair(lo, hi);

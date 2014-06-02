@@ -52,9 +52,9 @@ void Fgwas_params::print_stdout(){
 	cout << ":: 10-fold cross-validation?: ";
 	if (xv) cout << "yes\n";
 	else cout << "no\n";
-	cout << ":: Pairwise?: ";
-	if (pairwise) cout << "yes\n";
-	else cout << "no\n";
+	//cout << ":: Pairwise?: ";
+	//if (pairwise) cout << "yes\n";
+	//else cout << "no\n";
 	//cout << ":: Drop chromosome: ";
 	//if (!dropchr) cout << "None\n";
 	//else cout << chrtodrop <<"\n";

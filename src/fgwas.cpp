@@ -14,7 +14,7 @@ using namespace std;
 
 
 void printopts(){
-        cout << "\nfgwas v. 0.3.3\n";
+        cout << "\nfgwas v. 0.3.4\n";
         cout << "by Joe Pickrell (jkpickrell@nygenome.org)\n\n";
         cout << "-i [file name] input file w/ Z-scores\n";
         cout << "-o [string] stem for names of output files\n";
@@ -147,8 +147,10 @@ int main(int argc, char *argv[]){
 				pair<pair<int, int>,  pair<double, double> > sci = cis[0];
 				out << "pi_region ";
 				if (sci.first.first == 0) out<< sci.second.first << " " << s.segpi << " ";
+				else if (sci.first.first == 2) out << "<"<< sci.second.first << " "<< s.segpi << " ";
 				else out << "fail "<< s.segpi << " ";
 				if (sci.first.second == 0) out << sci.second.second << "\n";
+				else if (sci.first.second == 2) out << ">"<< sci.second.second << "\n";
 				else out << "fail\n";
 
 
@@ -156,8 +158,10 @@ int main(int argc, char *argv[]){
 					out << s.segannotnames[i] << "_ln ";
 					int index = i+1;
 					if (cis[index].first.first == 0)  out<< cis[index].second.first << " " << s.seglambdas[i]<< " ";
+					else if (cis[index].first.first == 2) out<< "<"<< cis[index].second.first << " " << s.seglambdas[i]<< " ";
 					else out << "fail "<< s.seglambdas[i] << " ";
 					if (cis[index].first.second == 0) out << cis[index].second.second << "\n";
+					else if (cis[index].first.second == 2) out << ">"<<cis[index].second.second << "\n";
 					else out << "fail\n";
 				}
 			}
@@ -168,8 +172,10 @@ int main(int argc, char *argv[]){
 				int index = i+1+s.seglambdas.size();
 				if (p.finemap) index = i;
 				if (cis[index].first.first == 0)  out<< cis[index].second.first << " " << s.lambdas[i]<< " ";
+				else if (cis[index].first.first == 2) out<< "<"<< cis[index].second.first << " " << s.lambdas[i]<< " ";
 				else out << "fail "<< s.lambdas[i] << " ";
 				if (cis[index].first.second == 0) out << cis[index].second.second << "\n";
+				else if (cis[index].first.second == 2) out << ">"<<cis[index].second.second << "\n";
 				else out << "fail\n";
 			}
 		}
