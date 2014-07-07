@@ -671,7 +671,7 @@ void SNPs::print(string outfile, string outfile2){
 			if (Z> maxZ) maxZ = Z;
 			logsegbf= sumlog(logsegbf, logpi+logbf);
 		}
-		seglPO = segbf+ seglpio;
+		seglPO = logsegbf+ seglpio;
 		segPPA = exp(seglPO- sumlog(0, seglPO));
 		//if fine mapping, all priors are 1
 		if (params->finemap){
