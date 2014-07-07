@@ -73,7 +73,7 @@ void SNPs::check_input(){
 		for (int i= st+1; i < sp; i++){
 			string testchr = d[i].chr;
 			int testpos = d[i].pos;
-			if (testchr == prevchr and prevpos >= testpos){  //test that each segment is only a single chromosome, is ordered
+			if (testchr == prevchr and prevpos > testpos){  //test that each segment is only a single chromosome, is ordered
 				cerr<< "ERROR: SNPs out of order\nChromosome "<<testchr << ". Position "<< prevpos << " seen before "<< testpos<< "\n";
 				exit(1);
 			}
@@ -660,33 +660,33 @@ void SNPs::print(string outfile, string outfile2){
 		double segp = segpriors[segnum];
 		double seglpio = log(segp)- log(1-segp);
 		double seglPO;
-		double segbf = 0;
+		double logsegbf = -1000;
 		double segPPA;
 		double sum = 0;
 		double maxZ = 0;
 		for (int i = stindex; i < spindex; i++){
-			double pi = exp(snppri[i]);
-			double bf = exp(d[i].BF);
+			double logpi = snppri[i];
+			double logbf = d[i].BF;
 			double Z = fabs(d[i].Z);
 			if (Z> maxZ) maxZ = Z;
-			segbf+= pi*bf;
+			logsegbf= sumlog(logsegbf, logpi+logbf);
 		}
-		seglPO = log(segbf)+ seglpio;
-		segPPA = exp(seglPO)/ (1+ exp(seglPO));
+		seglPO = logsegbf+ seglpio;
+		segPPA = exp(seglPO- sumlog(0, seglPO));
 		//if fine mapping, all priors are 1
 		if (params->finemap){
 			segp = 1;
 			segPPA = 1;
 		}
-		out2 << maxZ<< " "<< log(segbf) << " " << segp << " "<< seglPO << " "<< segPPA;
+		out2 << maxZ<< " "<< logsegbf << " " << segp << " "<< seglPO << " "<< segPPA;
 		for (int i = 0; i < nsegannot; i++) out2 << " "<< segannot[segnum][i];
 		out2 << "\n";
 		for (int i =stindex ; i < spindex; i++){
 			//double pi = snppri[i]*segpi;
-			double pi = exp(snppri[i])*segp;
-			double num = exp(snppri[i])*exp(d[i].BF);
-			double lpio = log(pi) - log(1-pi);
-			double cPPA = num/segbf;
+			double logpi = snppri[i]+log(segp);
+			double lognum = snppri[i] +d[i].BF;
+			double lpio = logpi - log(1-exp(logpi));
+			double cPPA = exp(lognum - logsegbf);
 			double lPO = d[i].BF + lpio;
 			double tPPA = cPPA*segPPA;
 			double PPA = exp(lPO)/  ( 1+ exp(lPO));
