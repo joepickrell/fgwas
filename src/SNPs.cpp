@@ -73,7 +73,7 @@ void SNPs::check_input(){
 		for (int i= st+1; i < sp; i++){
 			string testchr = d[i].chr;
 			int testpos = d[i].pos;
-			if (testchr == prevchr and prevpos > testpos){  //test that each segment is only a single chromosome, is ordered
+			if (testchr == prevchr and prevpos >= testpos){  //test that each segment is only a single chromosome, is ordered
 				cerr<< "ERROR: SNPs out of order\nChromosome "<<testchr << ". Position "<< prevpos << " seen before "<< testpos<< "\n";
 				exit(1);
 			}
