@@ -74,18 +74,6 @@ The input is a gzipped, space-delimited text file containing information about t
 \item N: the sample size used in the association study at this SNP (this can vary from SNP to SNP due to, e.g., missing data).
 \end{enumerate}
 
-Alternatively, if this is a case-control study, you need:
-
-\begin{enumerate}
-\item SNPID: a SNP identifier
-\item CHR: the chromosome for the SNP
-\item POS: the position of the SNP
-\item F: the allele frequency of one of the alleles of the SNP
-\item Z: the Z-score for from the association study
-\item NCASE: the number of cases used in the association study at this SNP
-\item NCONTROL: the number of controls used in the association study at this SNP
-\end{enumerate}
-
 Note: if you include a column labeled SE in the header of the file, this column will be taken as a direct estimate of the standard errors of the regression parameter and will override the sample size and allele frequency columns. 
 
 The remainder of the columns can have almost any name (apart from all those listed above). Columns can be of two types:
@@ -102,6 +90,23 @@ The remainder of the columns can have almost any name (apart from all those list
 \texttt{rs134344 chr5 56665 -1.2 0.3 9800 0 23550}\\
 \texttt{rs444329 chr5 106665 -0.4 0.9 9800 0 66783}\\
 \texttt{rs532 chr6 102435 4.4 0.09 9798 1 550}
+
+\subsubsection{Case/control studies (\texttt{-cc})}\label{cc}
+If the study is a case/control study, use the \texttt{-cc} flag for all commands. The input file needs:
+
+\begin{enumerate}
+\item SNPID: a SNP identifier
+\item CHR: the chromosome for the SNP
+\item POS: the position of the SNP
+\item F: the allele frequency of one of the alleles of the SNP
+\item Z: the Z-score for from the association study
+\item NCASE: the number of cases used in the association study at this SNP
+\item NCONTROL: the number of controls used in the association study at this SNP
+\end{enumerate}
+
+Note: if you include a column labeled SE in the header of the file, this column will be taken as a direct estimate of the standard errors of the log-odds ratio and will override the sample size and allele frequency columns. 
+
+The remainder of the columns describing the annotations are identical to those for quantitative trait studies. 
 
 \subsubsection{Fine-mapping/eQTL input (\texttt{-fine})} \label{finemap}
 In the fine-mapping/eQTL case, we assume that there are a set of regions of interest (for example, regions containing the top 50 hits in a GWAS, or the cis regions surrounding 400 genes with eQTLs). In this case, the file format is the same as above with two exceptions. First, there is an additional column labeled SEGNUMBER. Each region should have a unique SEGNUMBER identified. Second, the file should be ordered according to this column (rather by chromosome and position). For example, the following (in a gzipped text file) would be an allowed input:
