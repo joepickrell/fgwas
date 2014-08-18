@@ -269,7 +269,7 @@ void SNPs::load_snps_z(string infile, double prior, vector<string> annot, vector
    	}
    	else posindex = header_index["POS"];
 
-	if (header_index.find("Z") == header_index.end() && !override_z){
+	if (header_index.find("Z") == header_index.end()){
    		cerr << "ERROR: cannot find Z in header\n";
    		exit(1);
    	}
