@@ -96,6 +96,7 @@ public:
 	int golden_section_l0(double, double, double, double);
 
 	void check_input();
+	void check_string2digit(string);
 };
 
 struct GSL_params{

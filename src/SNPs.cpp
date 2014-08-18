@@ -346,6 +346,7 @@ void SNPs::load_snps_z(string infile, double prior, vector<string> annot, vector
 
     		SNP s(rs, chr , pos, N, alfreq, z, prior, an, dists, dmodels);
     		if (params->finemap){
+    			check_string2digit(line[segnumberindex]);
     			int snumber = atoi(line[segnumberindex].c_str());
     			s.chunknumber = snumber;
     		}
@@ -396,6 +397,7 @@ void SNPs::load_snps_z(string infile, double prior, vector<string> annot, vector
 
       		SNP s(rs, chr , pos, Ncase, Ncontrol, alfreq, z, prior, an, dists, dmodels);
     		if (params->finemap){
+    			check_string2digit(line[segnumberindex]);
     			int snumber = atoi(line[segnumberindex].c_str());
     			s.chunknumber = snumber;
     		}
@@ -425,6 +427,14 @@ void SNPs::load_snps_z(string infile, double prior, vector<string> annot, vector
     }
 }
 
+void SNPs::check_string2digit(string s){
+	for (int i = 0; i < s.size(); i++){
+		if (!isdigit(s.at(i))){
+			cerr << "ERROR: "<< s <<" is used in SEGNUMBER but is not a number\n";
+			exit(1);
+		}
+	}
+}
 void SNPs::append_dannotnames(string name, vector<pair<int, int> > model){
 	for (vector<pair<int, int> >::iterator it = model.begin(); it != model.end(); it++){
 		stringstream ss;
