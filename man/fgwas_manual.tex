@@ -74,7 +74,7 @@ The input is a gzipped, space-delimited text file containing information about t
 \item N: the sample size used in the association study at this SNP (this can vary from SNP to SNP due to, e.g., missing data).
 \end{enumerate}
 
-Note: if you include a column labeled SE in the header of the file, this column will be taken as a direct estimate of the standard errors of the regression parameter and will override the sample size and allele frequency columns. 
+Note: two variants of the above file format are allowed. if you include a column labeled SE in the header of the file, this column will be taken as a direct estimate of the standard errors of the regression coefficient and will override the sample size and allele frequency columns. Alternatively, if you include a column labeled LNBF in the header of the file, this column will be taken as a direct measurement of the natural log of the Bayes factor for this SNP and will override the Z-score, sample size, and allele frequency columns.
 
 The remainder of the columns can have almost any name (apart from all those listed above). Columns can be of two types:
 
@@ -104,7 +104,7 @@ If the study is a case/control study, use the \texttt{-cc} flag for all commands
 \item NCONTROL: the number of controls used in the association study at this SNP
 \end{enumerate}
 
-Note: if you include a column labeled SE in the header of the file, this column will be taken as a direct estimate of the standard errors of the log-odds ratio and will override the sample size and allele frequency columns. 
+Note: two variants of the above file format are allowed. if you include a column labeled SE in the header of the file, this column will be taken as a direct estimate of the standard errors of the log-odds ratio and will override the sample size and allele frequency columns. Alternatively, if you include a column labeled LNBF in the header of the file, this column will be taken as a direct measurement of the natural log of the Bayes factor for this SNP and will override the Z-score, sample size, and allele frequency columns.
 
 The remainder of the columns describing the annotations are identical to those for quantitative trait studies. 
 
