@@ -33,7 +33,6 @@ SNPs::SNPs(Fgwas_params *p){
 		make_chrsegments();
 		make_segments(params->K);
 	}
-
 	//double-check input quality
 	check_input();
 
@@ -235,6 +234,9 @@ void SNPs::load_snps_z(string infile, double prior, vector<string> annot, vector
    	bool override_v = false;
    	bool override_z = false;
    	int seindex;
+   	if (header_index.find("SEGNUMBER") != header_index.end() && params->finemap == false){
+   		cout << "WARNING: detected SEGNUMBER in header, but no -fine flag. Are you sure you're not using the fine-mapping format?\n";
+   	}
    	if (header_index.find("SE") != header_index.end()){
    		cout << "WARNING: detected SE in header, will override F and N\n";
    		seindex = header_index["SE"];
@@ -759,6 +761,10 @@ void SNPs::make_segments(int size){
 		int starti = it->first;
 		int endi = it->second;
 		int length = endi-starti;
+		if (length < size){
+			cerr << "ERROR: chromosome "<< d[starti].chr << " has "<< length << " SNPs, requesting blocks of size "<< size << "\n";
+			exit(1);
+		}
 		int bestmod = length % size;
 		int bestsize = size;
 		for (int i = size -20; i < size+20; i++){
