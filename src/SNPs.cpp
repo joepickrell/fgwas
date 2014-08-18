@@ -231,13 +231,19 @@ void SNPs::load_snps_z(string infile, double prior, vector<string> annot, vector
    		segannotindex = header_index[segannot[0]];
    	}
    	// get indices for the rs, maf, chr, pos, N, Ncase, Ncontrol,
-   	int rsindex, mafindex, chrindex, zindex, posindex, Nindex, Ncaseindex, Ncontrolindex, segnumberindex, condindex;
+   	int rsindex, mafindex, chrindex, zindex, posindex, Nindex, Ncaseindex, Ncontrolindex, segnumberindex, condindex, bfindex;
    	bool override_v = false;
+   	bool override_z = false;
    	int seindex;
    	if (header_index.find("SE") != header_index.end()){
    		cout << "WARNING: detected SE in header, will override F and N\n";
    		seindex = header_index["SE"];
    		override_v = true;
+   	}
+  	if (header_index.find("LNBF") != header_index.end()){
+   		cout << "WARNING: detected LNBF in header, will override Z, F and N\n";
+   		bfindex = header_index["LNBF"];
+   		override_z = true;
    	}
    	if (header_index.find("SNPID") == header_index.end()){
    		cerr << "ERROR: cannot find SNPID in header\n";
@@ -263,7 +269,7 @@ void SNPs::load_snps_z(string infile, double prior, vector<string> annot, vector
    	}
    	else posindex = header_index["POS"];
 
-	if (header_index.find("Z") == header_index.end()){
+	if (header_index.find("Z") == header_index.end() && !override_z){
    		cerr << "ERROR: cannot find Z in header\n";
    		exit(1);
    	}
@@ -349,6 +355,10 @@ void SNPs::load_snps_z(string infile, double prior, vector<string> annot, vector
     			s.V = se*se;
     			s.BF = s.calc_logBF();
     		}
+    		if (override_z){
+    			float lnBF = atof(line[bfindex].c_str());
+    			s.BF = lnBF;
+    		}
     		if (params->cond){
     			if (line[condindex] == "1") s.condannot =true;
     			else if (line[condindex] == "0") s.condannot = false;
@@ -395,6 +405,10 @@ void SNPs::load_snps_z(string infile, double prior, vector<string> annot, vector
        			s.V = se*se;
        			s.BF = s.calc_logBF();
        		}
+      		if (override_z){
+        			float lnBF = atof(line[bfindex].c_str());
+        			s.BF = lnBF;
+      		}
       		if (params->cond){
       			if (line[condindex] == "1") s.condannot =true;
       			else if (line[condindex] == "0") s.condannot = false;
