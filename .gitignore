@@ -12,3 +12,4 @@
 *.la
 *.a
 /autom4te.cache
+aclocal.m4
