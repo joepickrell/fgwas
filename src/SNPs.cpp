@@ -682,7 +682,7 @@ void SNPs::print(string outfile, string outfile2){
 	for (vector<pair<int, int> >::iterator it = segments.begin(); it != segments.end(); it++){
 		int stindex = it->first;
 		int spindex = it->second;
-		out2 << segnum << " "<< d[stindex].chr << " "<< d[stindex].pos << " "<< d[spindex].pos << " ";
+		out2 << segnum << " "<< d[stindex].chr << " "<< d[stindex].pos << " "<< d[spindex-1].pos << " ";
 		double segp = segpriors[segnum];
 		double seglpio = log(segp)- log(1-segp);
 		double seglPO;
