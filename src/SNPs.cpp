@@ -425,6 +425,7 @@ void SNPs::load_snps_z(string infile, double prior, vector<string> annot, vector
 
     	}
     }
+    cout << "Read "<< d.size() << " variants\n";
 }
 
 void SNPs::check_string2digit(string s){
