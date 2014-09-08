@@ -317,7 +317,7 @@ void SNPs::load_snps_z(string infile, double prior, vector<string> annot, vector
     	string rs = line[rsindex];
 
     	double alfreq = atof(line[mafindex].c_str());
-    	if (alfreq < 1e-8) continue;
+    	if (alfreq < 1e-8 and !override_z and !override_v) continue;
     	double z = atof(line[zindex].c_str());
 
     	//quantitative trait
