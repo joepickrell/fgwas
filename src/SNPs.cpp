@@ -684,7 +684,7 @@ void SNPs::print(string outfile, string outfile2){
 	ogzstream out(outfile.c_str());
 	ogzstream out2(outfile2.c_str());
 	out << "id chr pos logBF Z V pi pseudologPO pseudoPPA PPA chunk";
-	out2 << "chunk chr st sp max_abs_Z logBF pi logPO PPA";
+	out2 << "chunk NSNP chr st sp max_abs_Z logBF pi logPO PPA";
 	for (vector<string>::iterator it = annotnames.begin(); it != annotnames.end(); it++) out << " "<< *it;
 	out << "\n";
 	for (vector<string>::iterator it = segannotnames.begin(); it != segannotnames.end(); it++) out2 << " "<< *it;
@@ -693,7 +693,7 @@ void SNPs::print(string outfile, string outfile2){
 	for (vector<pair<int, int> >::iterator it = segments.begin(); it != segments.end(); it++){
 		int stindex = it->first;
 		int spindex = it->second;
-		out2 << segnum << " "<< d[stindex].chr << " "<< d[stindex].pos << " "<< d[spindex-1].pos << " ";
+		out2 << segnum << " " << spindex-stindex << " "<< d[stindex].chr << " "<< d[stindex].pos << " "<< d[spindex-1].pos << " ";
 		double segp = segpriors[segnum];
 		double seglpio = log(segp)- log(1-segp);
 		double seglPO;
