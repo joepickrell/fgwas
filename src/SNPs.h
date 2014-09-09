@@ -24,6 +24,7 @@ public:
 	vector<double> snppost;
 	vector<double> lambdas;
 	vector<string> annotnames;
+	vector<string> chrnames;
 	int nannot;
 	vector<vector<pair<int, int> > > dmodels; // hold the distance models
 	double condlambda; //for conditional analysis
@@ -55,6 +56,8 @@ public:
 	void print(string, string);
 
 	void make_segments(int);
+	void make_segments(string);
+	map<string, vector<pair<int, int> > > read_bedfile(string);
 	void make_chrsegments();
 	void make_segments_finemap();
 	void print_segments();

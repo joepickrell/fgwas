@@ -31,7 +31,8 @@ SNPs::SNPs(Fgwas_params *p){
 	if (params->finemap) make_segments_finemap();
 	else{
 		make_chrsegments();
-		make_segments(params->K);
+		if (params->bedseg) make_segments(params->segment_bedfile);
+		else make_segments(params->K);
 	}
 	//double-check input quality
 	check_input();
@@ -765,6 +766,125 @@ vector<set<int> > SNPs::make_cross10(){
 	return toreturn;
 
 }
+
+map<string, vector<pair< int, int> > > SNPs::read_bedfile(string bedfile){
+	map<string, vector<pair< int, int> > > toreturn;
+	ifstream in(bedfile.c_str());
+	vector<string> line;
+	struct stat stFileInfo;
+	int intStat;
+	string st, buf;
+
+	intStat = stat(bedfile.c_str(), &stFileInfo);
+	if (intStat !=0){
+		std::cerr<< "ERROR: cannot open file " << bedfile << "\n";
+		exit(1);
+	}
+    while(getline(in, st)){
+    	buf.clear();
+    	stringstream ss(st);
+    	line.clear();
+    	while (ss>> buf){
+    		line.push_back(buf);
+    	}
+    	string chr = line[0];
+    	int start = atoi(line[1].c_str());
+    	int stop = atoi(line[2].c_str());
+    	if (toreturn.find(chr) == toreturn.end()) {
+    		vector<pair<int, int> > tmp;
+    		toreturn.insert(make_pair(chr, tmp));
+    	}
+    	toreturn[chr].push_back(make_pair(start, stop));
+
+    }
+
+	// check to make sure all entries are ordered
+
+	for (map<string, vector<pair<int, int> > >::iterator it = toreturn.begin(); it != toreturn.end(); it++){
+		vector<pair<int, int> > tmp = it->second;
+		pair<int, int> prev = tmp[0];
+		if (prev.second < prev.first) {
+				cerr<<"ERROR: start and stop positions in bed file out of order: "<< it->first << " "<< prev.first<< " "<< prev.second << "\n";
+				exit(1);
+		}
+		for (int i = 1; i < tmp.size(); i++){
+			pair<int, int> current = tmp[i];
+			//cout << current.first << " "<< current.second << " "<< prev.second << "\n";
+			if (current.second < current.first) {
+					cerr<<"ERROR: start and stop positions in bed file out of order: "<< it->first << " "<< current.first<< " "<< current.second << "\n";
+					exit(1);
+			}
+			if (current.first < prev.second) {
+						cerr<<"ERROR: bed file out of order: "<< it->first << " "<< prev.first<< " "<< prev.second << "\n" << it->first << " "<< current.first<< " "<< current.second << "\n";
+						exit(1);
+			}
+			prev =tmp[i];
+		}
+	}
+	return toreturn;
+
+}
+void SNPs::make_segments(string bedfile){
+	segments.clear();
+	map<string, vector<pair<int, int> > > bedsegs = read_bedfile(bedfile);
+	for (int i = 0; i < chrnames.size(); i++){
+		string tmpchr = chrnames[i];
+		cout << tmpchr << "\n";
+		if (bedsegs.find(tmpchr) == bedsegs.end()){
+			cerr << "ERROR: chromsome "<< tmpchr << " not found in .bed file\n";
+			exit(1);
+		}
+		vector<pair<int, int> > intervals = bedsegs[tmpchr];
+		pair<int, int> chromosome = chrsegments[i];
+		pair<int, int> currentseg = intervals[0];
+		int j = chromosome.first;
+		int start = j;
+		int intervalindex = 0;
+		while (j < chromosome.second){
+			int jpos = d[j].pos;
+
+			if (jpos < currentseg.first){
+				//cout<< jpos << " "<< currentseg.first << " "<< currentseg.second << " here1\n";
+				cerr << "ERROR: current segment is "<< currentseg.first << " "<< currentseg.second << ", position is "<< jpos << "\n";
+				exit(1);
+			}
+			else if (jpos > currentseg.second and j == start){
+				//cout<< jpos << " "<< currentseg.first << " "<< currentseg.second << " here2\n";
+				intervalindex++;
+				if (intervalindex >= intervals.size()){
+					cerr << "ERROR: position "<< jpos << " is outside range of bed file\n";
+					exit(1);
+				}
+				currentseg = intervals[intervalindex];
+			}
+			else if (jpos >=currentseg.first and jpos < currentseg.second) {
+				//cout<< jpos << " "<< currentseg.first << " "<< currentseg.second << " here3\n";
+				j = j+1;
+			}
+			else if (jpos >= currentseg.second and j != start){
+				//cout<< jpos << " "<< currentseg.first << " "<< currentseg.second << " here4\n";
+				//cout << start << " "<< j << " adding\n";
+				segments.push_back(make_pair(start, j));
+				start = j;
+				intervalindex++;
+				if (intervalindex >= intervals.size()){
+					cerr << "ERROR: position "<< jpos << " is outside range of bed file\n";
+					exit(1);
+				}
+				currentseg = intervals[intervalindex];
+				//j = j+1;
+			}
+			else{
+				cerr << "ERROR: missing something when reading bed? "<< jpos << " "<<  currentseg.first << " "<< currentseg.second << "\n";
+				exit(1);
+			}
+
+
+		}
+		//cout << start << " "<< j << " done adding\n";
+		segments.push_back(make_pair(start, j));
+	}
+}
 void SNPs::make_segments(int size){
 	segments.clear();
 	int counter = 0;
@@ -820,6 +940,7 @@ void SNPs::make_segments_finemap(){
 }
 
 void SNPs::make_chrsegments(){
+	chrnames.clear();
 	chrsegments.clear();
 	int i = 0;
 	int start = i;
@@ -830,6 +951,7 @@ void SNPs::make_chrsegments(){
 		string tmpchr = d[i].chr;
 		if (tmpchr != startchr){
 			int end = i;
+			chrnames.push_back(startchr);
 			chrsegments.push_back(make_pair(start, end));
 			start = i;
 			startpos = d[i].pos;
@@ -838,6 +960,7 @@ void SNPs::make_chrsegments(){
 		i++;
 	}
 	int end = i;
+	chrnames.push_back(startchr);
 	chrsegments.push_back(make_pair(start, end));
 }
 

@@ -77,7 +77,7 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-bin_PROGRAMS = fgwas$(EXEEXT)
+bin_PROGRAMS = fgwas$(EXEEXT) test$(EXEEXT)
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/depcomp $(noinst_HEADERS)
@@ -97,6 +97,10 @@ am_fgwas_OBJECTS = CmdLine.$(OBJEXT) fgwas.$(OBJEXT) \
 	fgwas_params.$(OBJEXT)
 fgwas_OBJECTS = $(am_fgwas_OBJECTS)
 fgwas_LDADD = $(LDADD)
+am_test_OBJECTS = test.$(OBJEXT) CmdLine.$(OBJEXT) gzstream.$(OBJEXT) \
+	SNP.$(OBJEXT) SNPs.$(OBJEXT) fgwas_params.$(OBJEXT)
+test_OBJECTS = $(am_test_OBJECTS)
+test_LDADD = $(LDADD)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -126,8 +130,8 @@ AM_V_CXXLD = $(am__v_CXXLD_@AM_V@)
 am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
-SOURCES = $(fgwas_SOURCES)
-DIST_SOURCES = $(fgwas_SOURCES)
+SOURCES = $(fgwas_SOURCES) $(test_SOURCES)
+DIST_SOURCES = $(fgwas_SOURCES) $(test_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -246,6 +250,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 DISTCHECK_CONFIGURE_FLAGS = LDFLAGS=-L/opt/local/lib CXXFLAGS=-I/opt/local/include
 fgwas_SOURCES = CmdLine.cpp fgwas.cpp gzstream.cpp SNP.cpp SNPs.cpp fgwas_params.cpp
+test_SOURCES = test.cpp CmdLine.cpp gzstream.cpp SNP.cpp SNPs.cpp fgwas_params.cpp
 noinst_HEADERS = gzstream.h CmdLine.h SNP.h SNPs.h fgwas_params.h
 all: all-am
 
@@ -328,6 +333,10 @@ fgwas$(EXEEXT): $(fgwas_OBJECTS) $(fgwas_DEPENDENCIES) $(EXTRA_fgwas_DEPENDENCIE
 	@rm -f fgwas$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(fgwas_OBJECTS) $(fgwas_LDADD) $(LIBS)
 
+test$(EXEEXT): $(test_OBJECTS) $(test_DEPENDENCIES) $(EXTRA_test_DEPENDENCIES) 
+	@rm -f test$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(test_OBJECTS) $(test_LDADD) $(LIBS)
+
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
 
@@ -340,6 +349,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fgwas.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fgwas_params.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gzstream.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
