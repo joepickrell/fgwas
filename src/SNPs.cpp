@@ -852,27 +852,31 @@ void SNPs::make_segments(string bedfile){
 		while (j < chromosome.second){
 			int jpos = d[j].pos;
 
+			// make sure the position is inside the segment
 			if (jpos < currentseg.first){
-				//cout<< jpos << " "<< currentseg.first << " "<< currentseg.second << " here1\n";
 				cerr << "ERROR: current segment is "<< currentseg.first << " "<< currentseg.second << ", position is "<< jpos << "\n";
 				exit(1);
 			}
+
+			// if the first position is not in the first segment, increment the segment index
 			else if (jpos > currentseg.second and j == start){
-				//cout<< jpos << " "<< currentseg.first << " "<< currentseg.second << " here2\n";
 				intervalindex++;
+
+				//if this means the first position is beyond the bed file, exit
 				if (intervalindex >= intervals.size()){
 					cerr << "ERROR: position "<< jpos << " is outside range of bed file\n";
 					exit(1);
 				}
 				currentseg = intervals[intervalindex];
 			}
+
+			// inside the segment, increment position
 			else if (jpos >=currentseg.first and jpos < currentseg.second) {
-				//cout<< jpos << " "<< currentseg.first << " "<< currentseg.second << " here3\n";
 				j = j+1;
 			}
+
+			// past the end of the segment, add the previous segment and increment
 			else if (jpos >= currentseg.second and j != start){
-				//cout<< jpos << " "<< currentseg.first << " "<< currentseg.second << " here4\n";
-				//cout << start << " "<< j << " adding\n";
 				segments.push_back(make_pair(start, j));
 				start = j;
 				intervalindex++;
