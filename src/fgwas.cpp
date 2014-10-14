@@ -21,6 +21,7 @@ void printopts(){
         cout << "-w [string] which annotation(s) to use. Separate multiple annotations with plus signs\n";
         cout << "-dists [string:string] the name of the distance annotation(s) and the file(s) containing the distance model(s)\n";
         cout << "-k [integer] block size in number of SNPs (5000)\n";
+        cout << "-bed [string] read block positions from a .bed file\n";
         cout << "-v [float] variance of prior on normalized effect size (0.1 [0.5 for case-control])\n";
         cout << "-p [float] penalty on sum of squared lambdas, only relevant for -print (0.2)\n";
         //cout << "-mse input is in mean/standard error format (default is Z-score, sample size)\n";
@@ -32,7 +33,6 @@ void printopts(){
         cout << "-fine this is a fine mapping study, which implies a different input file format\n";
         cout << "-onlyp only do optimization under penalized likelihood\n";
         cout << "-cond [string] estimate the effect size of an annotation conditional on the others in the model\n";
-
         cout << "\n";
 }
 
@@ -52,6 +52,10 @@ int main(int argc, char *argv[]){
     }
     if (cmdline.HasSwitch("-o")) p.outstem = cmdline.GetArgument("-o", 0);
     if (cmdline.HasSwitch("-k")) p.K = atoi(cmdline.GetArgument("-k", 0).c_str());
+    if (cmdline.HasSwitch("-bed")) {
+    	p.bedseg = true;
+    	p.segment_bedfile = cmdline.GetArgument("-bed", 0);
+    }
     if (cmdline.HasSwitch("-cc")) {
     	p.cc = true;
     	p.V = 0.5;

@@ -27,6 +27,8 @@ Fgwas_params::Fgwas_params(){
 	cond = false;
 	testcond_annot = "";
 	pairwise = false;
+	segment_bedfile = "";
+	bedseg = false;
 }
 
 void Fgwas_params::print_stdout(){
@@ -34,7 +36,8 @@ void Fgwas_params::print_stdout(){
 	cout << ":::Parameter settings::::\n";
 	cout << ":: Input file: "<< infile << "\n";
 	cout << ":: Output stem: "<< outstem << "\n";
-	cout << ":: K: " << K << "\n";
+	if (!bedseg) cout << ":: K: " << K << "\n";
+	else cout << ":: Segment bedfile: "<< segment_bedfile << "\n";
 	cout << ":: V: " << V << "\n";
 	cout << ":: Ridge penalty: "<< ridge_penalty << "\n";
 	cout << ":: Case-control?: ";

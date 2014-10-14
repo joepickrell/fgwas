@@ -50,6 +50,8 @@ public:
 	bool cond;
 	string testcond_annot;
 	bool pairwise;
+	bool bedseg;
+	string segment_bedfile;
 };
 
 
