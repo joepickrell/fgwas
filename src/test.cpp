@@ -5,12 +5,18 @@
  *      Author: pickrell
  */
 
-#include "SNPs.h"
-#include "fgwas_params.h"
+//#include "SNPs.h"
+//#include "fgwas_params.h"
+#include <iostream>
+#include <vector>
+#include <cmath>
 using namespace std;
 
 int main(){
-
+	vector<double> tmp;
+	tmp.push_back(1.23); tmp.push_back(5.45);
+	cout << tmp.size() << " "<< log(tmp.size()) << "\n";
+	/*
 	Fgwas_params p;
 	//p.wannot.push_back("wgEncodeDukeDnase8988T");
 	//p.wannot.push_back("wgEncodeDukeDnaseAoSMC");
@@ -28,6 +34,7 @@ int main(){
 		cout << st << " "<< sp << "\n";
 		cout << s.d.at(st).chr << " "<< s.d.at(st).pos << " "<< s.d.at(sp-1).chr << " "<< s.d.at(sp-1).pos << "\n";
 	}
+	*/
 	//map<string, vector<pair<int, int> > > t = s.read_bedfile(bedfile);
 	//for (map<string, vector<pair<int, int> > >::iterator it = t.begin(); it != t.end(); it++){
 	//	for (vector<pair<int, int> >::iterator it2 = it->second.begin(); it2 != it->second.end(); it2++){

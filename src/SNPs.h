@@ -51,7 +51,7 @@ public:
 
 	double phi, resphi;
 	void load_snps(string, double, vector<string>);
-	void load_snps_z(string, double, vector<string>, vector<string>, vector<string>);
+	void load_snps_z(string, vector<double>, vector<string>, vector<string>, vector<string>);
 	void print();
 	void print(string, string);
 

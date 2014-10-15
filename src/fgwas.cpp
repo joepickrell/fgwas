@@ -22,7 +22,7 @@ void printopts(){
         cout << "-dists [string:string] the name of the distance annotation(s) and the file(s) containing the distance model(s)\n";
         cout << "-k [integer] block size in number of SNPs (5000)\n";
         cout << "-bed [string] read block positions from a .bed file\n";
-        cout << "-v [float] variance of prior on normalized effect size (0.1 [0.5 for case-control])\n";
+        cout << "-v [float] variance of prior on normalized effect size. To average priors, separate with commas (0.01,0.1,0.5)\n";
         cout << "-p [float] penalty on sum of squared lambdas, only relevant for -print (0.2)\n";
         //cout << "-mse input is in mean/standard error format (default is Z-score, sample size)\n";
         cout << "-print print the per-SNP output\n";
@@ -58,9 +58,16 @@ int main(int argc, char *argv[]){
     }
     if (cmdline.HasSwitch("-cc")) {
     	p.cc = true;
-    	p.V = 0.5;
     }
-    if (cmdline.HasSwitch("-v")) p.V = atof(cmdline.GetArgument("-v", 0).c_str());
+    if (cmdline.HasSwitch("-v")) {
+    	p.V.clear();
+    	vector<string> strs;
+    	string s = cmdline.GetArgument("-v", 0);
+    	boost::split(strs, s ,boost::is_any_of(","));
+    	for (int i  = 0; i < strs.size(); i++) {
+    		p.V.push_back( atof(strs[i].c_str()) );
+    	}
+    }
     if (cmdline.HasSwitch("-p")) p.ridge_penalty = atof(cmdline.GetArgument("-p", 0).c_str());
     if (cmdline.HasSwitch("-xv")) p.xv = true;
     if (cmdline.HasSwitch("-mse")) p.zformat = false;
