@@ -164,7 +164,7 @@ void SNPs::init_segpriors(){
 	}
 }
 
-void SNPs::load_snps_z(string infile, double prior, vector<string> annot, vector<string> dannot, vector<string> segannot){
+void SNPs::load_snps_z(string infile, vector<double> prior, vector<string> annot, vector<string> dannot, vector<string> segannot){
 	igzstream in(infile.c_str()); //only gzipped files
 	vector<string> line;
 	struct stat stFileInfo;

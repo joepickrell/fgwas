@@ -10,7 +10,7 @@ using namespace std;
 
 Fgwas_params::Fgwas_params(){
 	K = 5000;
-	V = 0.1;
+	V.push_back(0.01); V.push_back(0.1); V.push_back(0.5);
 	print = false;
 	zformat = true;
 	wannot.clear();
@@ -38,7 +38,9 @@ void Fgwas_params::print_stdout(){
 	cout << ":: Output stem: "<< outstem << "\n";
 	if (!bedseg) cout << ":: K: " << K << "\n";
 	else cout << ":: Segment bedfile: "<< segment_bedfile << "\n";
-	cout << ":: V: " << V << "\n";
+	cout << ":: V:";
+	for (int i = 0; i < V.size(); i ++)cout <<" "<< V[i];
+	cout << "\n";
 	cout << ":: Ridge penalty: "<< ridge_penalty << "\n";
 	cout << ":: Case-control?: ";
 	if (cc) cout << "yes\n";

@@ -29,9 +29,9 @@ using namespace std;
 class SNP{
 public:
 	SNP();
-	SNP(string, string, int, int, double, double, double, vector<bool>, vector<int>, vector<vector<pair<int, int> > >);
-	SNP(string, string, int, int, int, double, double, double, vector<bool>, vector<int>, vector<vector<pair<int, int> > >);
-	SNP(string, string, int, double, double, double, double, vector<bool>);
+	SNP(string, string, int, int, double, double, vector<double>, vector<bool>, vector<int>, vector<vector<pair<int, int> > >);
+	SNP(string, string, int, int, int, double, double, vector<double>, vector<bool>, vector<int>, vector<vector<pair<int, int> > >);
+	//SNP(string, string, int, double, double, double, double, vector<bool>);
 	string id;
 	string chr;
 	int pos;
@@ -41,7 +41,7 @@ public:
 	double N; // Sample size
 	double Ncase, Ncontrol; //Sample sizes for case/control study
 	double V; // Variance in estimate of effect size
-	double W; // Prior variance on effect size;
+	vector<double> W; // Prior variances on effect size (averaged);
 	int chunknumber;
 	float dens;
 	vector<bool> annot;
@@ -51,10 +51,12 @@ public:
 	void append_distannots(vector<vector<pair<int, int> > >); // convert distances to annotations according to distance models
 	int nannot;
 	double calc_logBF();
+	double calc_logBF_ind(double);
 	double approx_v(); // approximate V using f and N
 	double approx_v_cc(); //approximate V in case control setting
 	double get_x(vector<double>);
 	double get_x_cond(vector<double>, double);
+	double sumlog(double, double);
 };
 
 

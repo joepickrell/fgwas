@@ -31,7 +31,7 @@ class Fgwas_params{
 public:
 	Fgwas_params();
 	int K; //block size
-	double V; //prior variance
+	vector<double> V; //prior variance
 	bool print, zformat;
 	string infile, outstem;
 	bool cc;

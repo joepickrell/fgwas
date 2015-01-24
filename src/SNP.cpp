@@ -13,7 +13,7 @@ SNP::SNP(){
 
 
 
-SNP::SNP(string rs, string c, int p, int nsamp, double fr, double zscore, double prior, vector<bool> an, vector<int> ds, vector<vector<pair<int, int> > > dmodels){
+SNP::SNP(string rs, string c, int p, int nsamp, double fr, double zscore, vector<double> prior, vector<bool> an, vector<int> ds, vector<vector<pair<int, int> > > dmodels){
 	id = rs;
 	chr = c;
 	pos = p;
@@ -21,7 +21,8 @@ SNP::SNP(string rs, string c, int p, int nsamp, double fr, double zscore, double
 	N = nsamp;
 	Z = zscore;
 	V = approx_v();
-	W = prior;
+	W.clear();
+	for (vector<double>::iterator it = prior.begin(); it!= prior.end(); it++)  W.push_back(*it);
 	BF = calc_logBF();
 	for (vector<bool>::iterator it = an.begin(); it != an.end(); it++) {
 		annot.push_back(*it);
@@ -40,13 +41,14 @@ SNP::SNP(string rs, string c, int p, int nsamp, double fr, double zscore, double
 	nannot = annot.size();
 }
 
-SNP::SNP(string rs, string c, int p, int ncases, int ncontrols, double fr, double zscore, double prior, vector<bool> an, vector<int> ds, vector<vector<pair<int, int> > > dmodels){
+SNP::SNP(string rs, string c, int p, int ncases, int ncontrols, double fr, double zscore, vector<double> prior, vector<bool> an, vector<int> ds, vector<vector<pair<int, int> > > dmodels){
 	id = rs;
 	chr = c;
 	pos = p;
 	f = fr;
 	Z = zscore;
-	W = prior;
+	W.clear();
+	for (vector<double>::iterator it = prior.begin(); it!= prior.end(); it++)  W.push_back(*it);
 	Ncase = ncases;
 	Ncontrol = ncontrols;
 	V = approx_v_cc();
@@ -69,7 +71,7 @@ SNP::SNP(string rs, string c, int p, int ncases, int ncontrols, double fr, doubl
 	append_distannots(dmodels);
 	nannot = annot.size();
 }
-
+/*
 SNP::SNP(string rs, string c, int p, double fr, double mean, double se, double prior, vector<bool> an){
 	id = rs;
 	chr = c;
@@ -82,6 +84,12 @@ SNP::SNP(string rs, string c, int p, double fr, double mean, double se, double p
 	BF = calc_logBF();
 	nannot = an.size();
 	for (vector<bool>::iterator it = an.begin(); it != an.end(); it++) annot.push_back(*it);
+}
+*/
+
+double SNP::sumlog(double logx, double logy){
+        if (logx > logy) return logx + log(1 + exp(logy-logx));
+        else return logy + log(1 + exp(logx-logy));
 }
 
 void SNP::append_distannots(vector<vector<pair<int, int> > > dmodels){
@@ -109,14 +117,22 @@ void SNP::append_distannots(vector<vector<pair<int, int> > > dmodels){
 	}
 }
 
-double SNP::calc_logBF(){
+double SNP::calc_logBF_ind(double WW){
 	double toreturn = 0;
-	double r = W/ (V+W);
+	double r = WW/ (V+WW);
 	toreturn += -log ( sqrt(1-r) );
 	//cout << "tmp1 "<< toreturn << "\n";
 	toreturn += - (Z*Z*r/2);
 	//cout << "tmp2 "<< - (Z*Z/2.0) *( w/(V+w)) << "\n";
 	return -toreturn;
+}
+
+
+double SNP::calc_logBF(){
+	double toreturn = calc_logBF_ind(W[0]);
+	for (int i = 1; i < W.size(); i++)toreturn = sumlog(toreturn, calc_logBF_ind(W[i]));
+	toreturn = toreturn - log(W.size());
+	return toreturn;
 }
 
 double SNP::approx_v(){
