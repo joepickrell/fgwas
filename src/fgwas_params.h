@@ -24,6 +24,8 @@
 #include <gsl/gsl_multimin.h>
 #include <gsl/gsl_vector.h>
 #include <boost/algorithm/string.hpp>
+#include <gsl/gsl_rng.h>
+#include <gsl/gsl_randist.h>
 #include "CmdLine.h"
 using namespace std;
 
@@ -31,7 +33,7 @@ class Fgwas_params{
 public:
 	Fgwas_params();
 	int K; //block size
-	vector<double> V; //prior variance
+	vector<double> V; //prior variance(s)
 	bool print, zformat;
 	string infile, outstem;
 	bool cc;
