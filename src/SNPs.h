@@ -25,12 +25,11 @@ public:
 	vector<double> lambdas;
 	vector<string> annotnames;
 	vector<string> chrnames;
-	int nannot;
+	int nannot, nsegannot;
 	vector<vector<pair<int, int> > > dmodels; // hold the distance models
 	double condlambda; //for conditional analysis
 	//segment annotations
 	double segpi;
-	int nsegannot;
 	vector<string> segannotnames;
 	vector<pair<int, int> > segments;
 	vector<pair<int, int> > chrsegments;
@@ -100,6 +99,9 @@ public:
 
 	void check_input();
 	void check_string2digit(string);
+
+	//MCMC
+	void MCMC(gsl_rng *);
 };
 
 struct GSL_params{
