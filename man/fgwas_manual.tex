@@ -153,11 +153,18 @@ The default number of SNPs in a ``region" is 5,000. To change this, set the \tex
 \\
 \noindent \texttt{>fgwas -i input\_file.gz -k 10000}\\
 
+\subsection{Input region definitions from a .bed file (\texttt{-bed})}
+By default, genomic regions are defined in windows with fixed numbers of SNPs (see the \texttt{-k} flag). To define regions based on genomic coordinates instead, input a .bed file. Note that all SNPs must fall within a segment defined in the file:
+\\
+\\
+\noindent \texttt{>fgwas -i input\_file.gz -bed regions.bed}\\
+
+
 \subsection{Setting the prior variance on effect size (\texttt{-v})}
-The default prior variance on the effect size of SNPs is 0.1. To change this, set the \texttt{-v} flag:
+By default, Bayes factors are calculated by averaging over prior variances on the SNP effect sizes of 0.01, 0.1, and 0.5 (in standard deviation units or log-odds ratio units). To change this, set the \texttt{-v} flag. To average over Bayes factors computed with different prior variances, separate them with commas:
 \\
 \\
-\noindent \texttt{>fgwas -i input\_file.gz -v 0.5}\\
+\noindent \texttt{>fgwas -i input\_file.gz -v 0.2,0.3,0.5}\\
 
 \subsection{Fine-mapping study input format (\texttt{-fine})}
 To tell the program to expect an input file in fine-mapping format (see Section \ref{finemap} above), use the \texttt{-fine} flag For example:
