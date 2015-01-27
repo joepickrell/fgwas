@@ -20,12 +20,12 @@ fgwas depends on:
 - the [Boost Libraries](http://www.boost.org)
 
 ###Quick Start###
-The most up-to-date release is: version 0.3.3. See ["Releases"](https://github.com/joepickrell/fgwas/releases) above.
+The most up-to-date release is: version 0.3.6. See ["Releases"](https://github.com/joepickrell/fgwas/releases) above.
 After downloading fgwas-0.3.3.tar.gz at the link above, run:
 
->tar -xvf fgwas-0.3.3.tar.gz
+>tar -xvf fgwas-0.3.6.tar.gz
 
->cd fgwas-0.3.3
+>cd fgwas-0.3.6
 
 >./configure
 
