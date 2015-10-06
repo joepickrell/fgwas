@@ -108,9 +108,13 @@ int main(int argc, char *argv[]){
     	p.loquant = atof(cmdline.GetArgument("-dens", 1).c_str());
     	p.hiquant = atof(cmdline.GetArgument("-dens", 2).c_str());
     }
-
+    if (cmdline.HasSwitch("-mcmc")) p.mcmc = true;
 	SNPs s(&p);
 
+	if (p.mcmc){
+		// do the MCMC
+		return 0;
+	}
 	//if doing unpenalized optimization
 	if (!p.onlyp){
 		s.GSL_optim();

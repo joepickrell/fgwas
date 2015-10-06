@@ -52,6 +52,7 @@ public:
 	bool pairwise;
 	bool bedseg;
 	string segment_bedfile;
+	bool mcmc;
 };
 
 

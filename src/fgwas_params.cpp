@@ -29,6 +29,7 @@ Fgwas_params::Fgwas_params(){
 	pairwise = false;
 	segment_bedfile = "";
 	bedseg = false;
+	mcmc = false;
 }
 
 void Fgwas_params::print_stdout(){
@@ -45,6 +46,9 @@ void Fgwas_params::print_stdout(){
 	cout << ":: Case-control?: ";
 	if (cc) cout << "yes\n";
 	else cout << "no\n";
+	cout << ":: Method: ";
+	if (mcmc) cout << "MCMC\n";
+	else cout << "ML\n";
 	cout << ":: Fine-mapping?: ";
 	if (finemap) cout << "yes\n";
 	else cout << "no\n";
