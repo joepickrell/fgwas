@@ -54,7 +54,7 @@ private:
 
     int flush_buffer();
 public:
-    gzstreambuf() : opened(0) {
+    gzstreambuf() : opened(0), file(), mode(0) {
         setp( buffer, buffer + (bufferSize-1));
         setg( buffer + 4,     // beginning of putback area
               buffer + 4,     // read position
