@@ -231,7 +231,7 @@ void SNPs::load_snps_z(string infile, vector<double> prior, vector<string> annot
    		append_dannotnames(jname, dmodels[j]);
    	}
    	// get indices for segannot
-   	int segannotindex;
+        int segannotindex = 0;
    	if (segannot.size() > 0){
    		if (header_index.find(segannot[0]) == header_index.end()){
    			cerr << "ERROR: cannot find segment annotation "<< segannot[0] << "\n";
