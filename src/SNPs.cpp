@@ -742,10 +742,14 @@ double SNPs::cross10(bool penalize){
 	// L = 1/10* \sum_i L*(i)
 	// where L*(i) is the likelihood of data in group i after optimizing model without it
 	//
+        double initial_segpi = segpi; // Store local segpi
 	double toreturn =0;
 	vector< set<int> > split10 = make_cross10();
 	vector<double> Lstar;
 	for (vector<set<int> >::iterator it = split10.begin(); it != split10.end(); it++){
+                // Ensure the use of local segpi and not the estimated one from the previous
+                // cross validation
+                segpi = initial_segpi;  
 		GSL_xv_optim(*it, penalize);
 		double tmpl = 0;
 		for (set<int>::iterator it2 = it->begin(); it2 != it->end(); it2++) tmpl += llk(*it2);
